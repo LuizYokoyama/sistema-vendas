@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@Api(value="API REST Events")
+@Api(value="Events API REST")
 @CrossOrigin(origins = "*")
 public class EventsController {
 
