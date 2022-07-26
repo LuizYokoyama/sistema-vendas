@@ -28,6 +28,13 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools:2.7.0'
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.0'
+	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
+	implementation 'io.springfox:springfox-swagger2:3.0.0'
+
+
+
 }
 
 tasks.named('test') {
