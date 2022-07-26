@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/events")
+@RequestMapping("/api")
 public class EventsController {
 
     @Autowired
     private EventRepository eventRepository;
 
-    @GetMapping
+    @GetMapping("/event")
     public List<Event> list(){
         return eventRepository.findAll();
     }
 
 
-    @PostMapping
+    @PostMapping("/event")
     @ResponseStatus(HttpStatus.CREATED)
     public Event add(@RequestBody Event event){
         return eventRepository.save(event);
