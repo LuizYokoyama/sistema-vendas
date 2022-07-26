@@ -5,7 +5,6 @@ import lombok.Data;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
-import java.sql.Time;
 
 @Entity
 @Table(name="TB_EVENT")
@@ -24,7 +23,7 @@ public class Event implements Serializable {
 
     private Date dateFirstOccurrence;
 
-    private Time timeFirstOccurrence;
+ //   private Time timeFirstOccurrence;
 
     private float duration;
 }

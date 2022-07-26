@@ -19,7 +19,7 @@ public class EventsController {
     @Autowired
     private EventRepository eventRepository;
 
-    @GetMapping("/event")
+    @GetMapping("/events")
     @ApiOperation(value = "List of all events")
     public List<Event> list(){
         return eventRepository.findAll();
