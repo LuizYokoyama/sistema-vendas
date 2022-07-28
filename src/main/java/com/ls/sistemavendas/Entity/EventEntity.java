@@ -1,5 +1,6 @@
 package com.ls.sistemavendas.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -12,15 +13,21 @@ public class EventEntity {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "event_id")
     private Long id;
 
-    @Column(nullable = false)
-    private String eventName;
+    @Column(name = "event_name", nullable = false)
+    private String name;
 
-    private int amountOfAgents;
+    private String photo;
 
-    private LocalDate dateTimeFirstOccurrence;
+    private String description;
+
+    private int totalAgents;
+
+    private LocalDate firstOccurrenceDateTime;
 
     private float duration;
 }

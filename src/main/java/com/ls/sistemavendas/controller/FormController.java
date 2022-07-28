@@ -1,7 +1,7 @@
 package com.ls.sistemavendas.controller;
 
-import com.ls.sistemavendas.dto.EventDto;
-import com.ls.sistemavendas.service.IEventService;
+import com.ls.sistemavendas.dto.FormDto;
+import com.ls.sistemavendas.service.IFormService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,23 +14,23 @@ import java.util.List;
 @RequestMapping("/api")
 @Api(value="Events API REST")
 @CrossOrigin(origins = "*")
-public class EventsController {
+public class FormController {
 
     @Autowired
-    IEventService eventService;
+    IFormService formService;
 
     @GetMapping("/events")
     @ApiOperation(value = "List of all events")
-    public List<EventDto> list(){
-        return eventService.findAll();
+    public List<FormDto> list(){
+        return formService.findAll();
     }
 
 
     @PostMapping("/event")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Add a new event")
-    public EventDto add(@RequestBody EventDto eventDto){
-        return eventService.save(eventDto);
+    public FormDto add(@RequestBody FormDto formDto){
+        return formService.save(formDto);
     }
 
 }
