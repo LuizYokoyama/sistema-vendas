@@ -1,7 +1,7 @@
 package com.ls.sistemavendas.controller;
 
-import com.ls.sistemavendas.model.Event;
-import com.ls.sistemavendas.repository.EventRepository;
+import com.ls.sistemavendas.dto.EventDto;
+import com.ls.sistemavendas.service.IEventService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +17,20 @@ import java.util.List;
 public class EventsController {
 
     @Autowired
-    private EventRepository eventRepository;
+    IEventService eventService;
 
     @GetMapping("/events")
     @ApiOperation(value = "List of all events")
-    public List<Event> list(){
-        return eventRepository.findAll();
+    public List<EventDto> list(){
+        return eventService.findAll();
     }
 
 
     @PostMapping("/event")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Add a new event")
-    public Event add(@RequestBody Event event){
-        return eventRepository.save(event);
+    public EventDto add(@RequestBody EventDto eventDto){
+        return eventService.save(eventDto);
     }
 
 }
