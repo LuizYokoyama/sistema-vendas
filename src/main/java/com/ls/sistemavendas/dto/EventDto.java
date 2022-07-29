@@ -3,7 +3,7 @@ package com.ls.sistemavendas.dto;
 import com.ls.sistemavendas.Entity.StandEntity;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -19,7 +19,7 @@ public class EventDto {
 
     private int totalAgents;
 
-    private LocalDate firstOccurrenceDateTime;
+    private LocalDateTime firstOccurrenceDateTime;
 
     private float duration;
 

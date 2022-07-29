@@ -2,9 +2,7 @@ package com.ls.sistemavendas.service;
 
 import com.ls.sistemavendas.Entity.FormEntity;
 import com.ls.sistemavendas.dto.FormDto;
-import com.ls.sistemavendas.repository.EventRepository;
 import com.ls.sistemavendas.repository.FormRepository;
-import com.ls.sistemavendas.repository.StandRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,12 +14,6 @@ public class FormService implements IFormService {
 
     @Autowired
     private FormRepository formRepository;
-
-    @Autowired
-    private EventRepository eventRepository;
-
-    @Autowired
-    private StandRepository standRepository;
 
     @Override
     public FormDto save(FormDto formDto) {

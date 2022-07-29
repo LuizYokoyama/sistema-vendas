@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="TB_EVENT")
@@ -27,7 +27,7 @@ public class EventEntity {
 
     private int totalAgents;
 
-    private LocalDate firstOccurrenceDateTime;
+    private LocalDateTime firstOccurrenceDateTime;
 
     private float duration;
 }
