@@ -33,7 +33,7 @@ public class ProductEntity {
     @PositiveOrZero
     private double price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "stand_id")
     private StandEntity stand;

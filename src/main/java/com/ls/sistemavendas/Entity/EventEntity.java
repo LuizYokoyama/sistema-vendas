@@ -53,7 +53,7 @@ public class EventEntity {
     @Max(value = DURATION_MAX_VALUE)
     private float duration;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "stand_id")
     @NotNull(message = "Stands should not be null")
     private Set<StandEntity> standsList;

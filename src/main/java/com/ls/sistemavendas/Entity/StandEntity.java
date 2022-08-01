@@ -45,7 +45,7 @@ public class StandEntity {
     @NotNull(message = "Products list should not be null")
     private Set<ProductEntity> productsList;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "event_id")
     private EventEntity event;
