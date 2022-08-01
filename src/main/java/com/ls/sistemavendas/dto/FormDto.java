@@ -1,24 +1,25 @@
 package com.ls.sistemavendas.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ls.sistemavendas.Entity.AdminEntity;
-import com.ls.sistemavendas.Entity.EventEntity;
-import com.ls.sistemavendas.Entity.StandEntity;
-import lombok.Data;
+import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class FormDto {
 
-    @JsonIgnore
-    private Long id;
+    @EqualsAndHashCode.Include
+    @NotNull(message = "Events should not be null")
+    private EventDto event;
 
-    private EventEntity event;
+    @NotNull(message = "Admin should not be null")
+    private AdminDto admin;
 
-    private AdminEntity admin;
-
-    private Set<StandEntity> standsList;
-
+    @NotNull(message = "Stands should not be null")
+    private Set<StandDto> standsList;
 
 }

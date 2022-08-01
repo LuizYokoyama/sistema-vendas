@@ -12,19 +12,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@Api(value="Events API REST")
+@Api(value="Events Form API REST")
 @CrossOrigin(origins = "*")
 public class FormController {
 
     @Autowired
     IFormService formService;
 
-    @GetMapping("/events")
+    @GetMapping("/events-full")
     @ApiOperation(value = "List of all events")
-    public List<FormDto> list(){
-        return formService.findAll();
+    public List<FormDto> listFull(){
+        return formService.findAllFull();
     }
-
 
     @PostMapping("/event")
     @ResponseStatus(HttpStatus.CREATED)

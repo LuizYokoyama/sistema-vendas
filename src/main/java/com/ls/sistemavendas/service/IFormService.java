@@ -7,5 +7,8 @@ import java.util.List;
 public interface IFormService {
 
     FormDto save(FormDto formDto);
-    List findAll();
+    List findAllFull();
+
+
+
 }
