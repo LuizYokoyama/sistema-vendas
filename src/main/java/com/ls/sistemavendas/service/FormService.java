@@ -11,7 +11,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,16 +24,6 @@ public class FormService implements IFormService {
 
     @Override
     public FormDto save(FormDto formDto) {
-
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        Set<ConstraintViolation<FormDto>> violations = validator.validate(formDto);
-
-        if (!violations.isEmpty()){
-
-            return null;
-        }
 
         EventEntity eventEntity = new EventEntity();
         Set<StandDto> standsDto;
