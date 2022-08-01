@@ -22,11 +22,11 @@ public class ProductEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
     @EqualsAndHashCode.Include
-    @Size(max = PRODUCT_DESCRIPTION_MAX_SIZE, message = "Product description size should not be greater then "
-            + PRODUCT_DESCRIPTION_MAX_SIZE)
     private Long id;
 
     @Column(nullable = false)
+    @Size(max = PRODUCT_DESCRIPTION_MAX_SIZE, message = "Product description size should not be greater then "
+            + PRODUCT_DESCRIPTION_MAX_SIZE)
     private String description;
 
     @Column(nullable = false)
