@@ -2,6 +2,7 @@ package com.ls.sistemavendas.dto;
 
 import lombok.*;
 
+import javax.validation.Valid;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -12,10 +13,13 @@ import java.util.Set;
 public class FormDto {
 
     @EqualsAndHashCode.Include
+    @Valid
     private EventDto event;
 
+    @Valid
     private AdminDto admin;
 
+    @Valid
     private Set<StandDto> standsList;
 
 }

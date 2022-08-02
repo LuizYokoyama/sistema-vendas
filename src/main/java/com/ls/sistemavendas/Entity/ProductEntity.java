@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="TB_PRODUCT")
@@ -16,8 +14,6 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ProductEntity {
 
-    public static final int PRODUCT_DESCRIPTION_MAX_SIZE = 120;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
@@ -25,12 +21,9 @@ public class ProductEntity {
     private Long id;
 
     @Column(nullable = false)
-    @Size(max = PRODUCT_DESCRIPTION_MAX_SIZE, message = "Product description size should not be greater then "
-            + PRODUCT_DESCRIPTION_MAX_SIZE)
     private String description;
 
     @Column(nullable = false)
-    @PositiveOrZero
     private double price;
 
     @ManyToOne(fetch = FetchType.LAZY)
