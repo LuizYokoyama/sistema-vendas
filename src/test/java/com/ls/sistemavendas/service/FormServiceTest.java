@@ -1,5 +1,7 @@
 package com.ls.sistemavendas.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ls.sistemavendas.Entity.EventEntity;
 import com.ls.sistemavendas.Entity.ProductEntity;
 import com.ls.sistemavendas.Entity.StandEntity;
@@ -7,27 +9,35 @@ import com.ls.sistemavendas.dto.FormDto;
 import com.ls.sistemavendas.dto.ProductDto;
 import com.ls.sistemavendas.dto.StandDto;
 import com.ls.sistemavendas.repository.EventRepository;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.validation.Valid;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Service
-@Validated
-public class FormService implements IFormService {
+
+@SpringBootTest
+public class FormServiceTest {
 
     @Autowired
     private EventRepository eventRepository;
 
-    @Override
-    public FormDto save(@Valid FormDto formDto) {
+    @Test
+    void teste() throws IOException {
+        final var json = Paths.get("src", "test", "resources", "input.json");
+        final var formDto = new ObjectMapper().registerModule(new JavaTimeModule()).readValue(json.toFile(), FormDto.class);
+        save(formDto);
+    }
 
+    @ParameterizedTest
+    public void save(FormDto formDto) {
         EventEntity eventEntity = new EventEntity();
         Set<StandDto> standsDto;
         Set<StandEntity> standsEntity = new HashSet<>();
@@ -62,12 +72,8 @@ public class FormService implements IFormService {
 
         BeanUtils.copyProperties(eventRepository.save(eventEntity), formDto);
 
-        return formDto;
-    }
+        assertEquals(1.0, eventRepository.count());
 
-    @Override
-    public List findAllFull() {
-        return eventRepository.findAll();
-    }
 
+    }
 }

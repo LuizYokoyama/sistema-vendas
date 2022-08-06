@@ -1,0 +1,32 @@
+{
+  "admin": {
+    "avatar": "string",
+    "login": "string",
+    "name": "string",
+    "password": "string"
+  },
+  "event": {
+    "description": "string",
+    "duration": 0,
+    "eventName": "string",
+    "firstOccurrenceDateTime": "2022-09-04T00:38:25.756Z",
+    "id": 0,
+    "photo": "string",
+    "totalAgents": 0
+  },
+  "standsList": [
+    {
+      "description": "string",
+      "id": 0,
+      "index": 0,
+      "productsList": [
+        {
+          "description": "string",
+          "id": 0,
+          "price": 0
+        }
+      ],
+      "totalAgents": 0
+    }
+  ]
+}
