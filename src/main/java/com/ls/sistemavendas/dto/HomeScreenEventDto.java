@@ -2,6 +2,8 @@ package com.ls.sistemavendas.dto;
 
 import lombok.*;
 
+import java.util.UUID;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -10,7 +12,7 @@ import lombok.*;
 public class HomeScreenEventDto {
 
     @EqualsAndHashCode.Include
-    private Long id;
+    private UUID id;
 
     private String eventName;
 

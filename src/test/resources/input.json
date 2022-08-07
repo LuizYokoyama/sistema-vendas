@@ -7,26 +7,26 @@
   },
   "event": {
     "description": "string",
-    "duration": 0,
+    "duration": 70,
     "eventName": "string",
-    "firstOccurrenceDateTime": "2022-09-04T00:38:25.756Z",
-    "id": 0,
+    "firstOccurrenceDateTime": "2029-08-07T14:40:59.853Z",
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "photo": "string",
-    "totalAgents": 0
+    "totalAgents": 70
   },
   "standsList": [
     {
       "description": "string",
-      "id": 0,
-      "index": 0,
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "index": 70,
       "productsList": [
         {
           "description": "string",
-          "id": 0,
+          "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
           "price": 0
         }
       ],
-      "totalAgents": 0
+      "totalAgents": 70
     }
   ]
 }

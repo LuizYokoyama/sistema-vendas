@@ -5,20 +5,21 @@ import lombok.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.Set;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
+@Setter @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class StandDto {
 
-    public static final int STAND_DESCRIPTION_MAX_SIZE = 120;
+    public static final int STAND_DESCRIPTION_MAX_SIZE = 150;
     public static final int STAND_TOTAL_AGENT_MIN_VALUE = 1;
-    public static final int STAND_TOTAL_AGENT_MAX_VALUE = 100;
+    public static final int STAND_TOTAL_AGENT_MAX_VALUE = 900;
 
     @EqualsAndHashCode.Include
-    private long id;
+    private UUID id;
 
     @NotNull(message = "Forneça um índice!")
     @Positive(message = "Forneça um índice maior que zero!")

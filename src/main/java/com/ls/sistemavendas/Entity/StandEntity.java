@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "TB_STAND")
@@ -16,10 +17,10 @@ import java.util.Set;
 public class StandEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "stand_id")
     @EqualsAndHashCode.Include
-    private long id;
+    private UUID id;
 
     private int index;
 
@@ -28,7 +29,7 @@ public class StandEntity {
     private int totalAgents;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "stand_id")
     private Set<ProductEntity> productsList;
 
     @ManyToOne(fetch = FetchType.LAZY)

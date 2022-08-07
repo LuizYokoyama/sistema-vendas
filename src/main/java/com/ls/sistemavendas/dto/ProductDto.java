@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,10 +13,10 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ProductDto {
 
-    public static final int PRODUCT_DESCRIPTION_MAX_SIZE = 120;
+    public static final int PRODUCT_DESCRIPTION_MAX_SIZE = 150;
 
     @EqualsAndHashCode.Include
-    private Long id;
+    private UUID id;
 
     @Size(max = PRODUCT_DESCRIPTION_MAX_SIZE, message = "A descrição do produto deve ter até "
             + PRODUCT_DESCRIPTION_MAX_SIZE + "caracteres!")

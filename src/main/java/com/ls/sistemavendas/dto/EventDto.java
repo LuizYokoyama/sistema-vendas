@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +22,7 @@ public class EventDto {
     public static final int DURATION_MAX_VALUE = 1000;
 
     @EqualsAndHashCode.Include
-    private Long id;
+    private UUID id;
 
     @NotBlank(message = "Forneça o nome do evento!")
     @Size(max = NAME_MAX_SIZE)

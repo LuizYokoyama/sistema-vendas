@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name="TB_EVENT")
@@ -12,14 +13,15 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class EventEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "event_id")
     @EqualsAndHashCode.Include
-    private Long id;
+    private UUID id;
 
     @Column(name = "event_name", nullable = false)
     private String name;
@@ -35,7 +37,7 @@ public class EventEntity {
     private float duration;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "stand_id")
+    @JoinColumn(name = "event_id")
     private Set<StandEntity> standsList;
 
     @Column(name = "admin_name", nullable = false)

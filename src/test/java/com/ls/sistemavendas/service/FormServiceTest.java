@@ -11,7 +11,6 @@ import com.ls.sistemavendas.dto.StandDto;
 import com.ls.sistemavendas.repository.EventRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -38,7 +37,16 @@ public class FormServiceTest {
 
     @ParameterizedTest
     public void save(FormDto formDto) {
+        EventEntity eventEntity = formDtoToEntity(formDto);
+        eventRepository.save(eventEntity);
+
+        assertEquals(1.0, eventRepository.count());
+
+    }
+
+    private EventEntity formDtoToEntity(FormDto formDto) {
         EventEntity eventEntity = new EventEntity();
+
         Set<StandDto> standsDto;
         Set<StandEntity> standsEntity = new HashSet<>();
         standsDto = formDto.getStandsList();
@@ -69,11 +77,8 @@ public class FormServiceTest {
         eventEntity.setDuration(formDto.getEvent().getDuration());
         eventEntity.setDescription(formDto.getEvent().getDescription());
         eventEntity.setFirstOccurrenceDateTime(formDto.getEvent().getFirstOccurrenceDateTime());
+        eventEntity.setId(formDto.getEvent().getId());
 
-        BeanUtils.copyProperties(eventRepository.save(eventEntity), formDto);
-
-        assertEquals(1.0, eventRepository.count());
-
-
+        return eventEntity;
     }
 }

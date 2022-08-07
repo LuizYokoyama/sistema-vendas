@@ -53,9 +53,6 @@ services:
       - "9090:9090"
     volumes:
       - "./platform/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
-    deploy:
-      placement:
-        constraints:
-          - node.hostname == localhost
+
 
 

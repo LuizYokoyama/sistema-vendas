@@ -14,12 +14,12 @@ public class FormDto {
 
     @EqualsAndHashCode.Include
     @Valid
-    private EventDto event;
+    EventDto event;
 
     @Valid
-    private AdminDto admin;
+    AdminDto admin;
 
     @Valid
-    private Set<StandDto> standsList;
+    Set<StandDto> standsList;
 
 }
