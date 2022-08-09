@@ -32,4 +32,6 @@ scrape_configs:
     metrics_path: "/actuator/prometheus"
     scrape_interval: 5s
     static_configs:
-      - targets: ["127.0.0.1:8080"]
+      - targets: [ 'host.docker.internal:8080' ]
+        labels:
+          application: 'spring-actuator'

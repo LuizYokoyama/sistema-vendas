@@ -44,7 +44,7 @@ public class FormController {
 
         Optional<EventEntity> eventEntityOptional = formService.findById(id);
         if (!eventEntityOptional.isPresent()){
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento não encontrado!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
         formDto.getEvent().setId(id);
