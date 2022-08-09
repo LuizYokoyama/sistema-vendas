@@ -17,8 +17,6 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
             ConstraintViolationException ex ) {
         Map<String, String> constraintViolations = new HashMap<>();
         ex.getConstraintViolations().forEach((constraintViolation) -> {
-
-           // String fieldName = ((ConstraintViolation) constraintViolation).ge;
             String message = constraintViolation.getMessage();
             String field = constraintViolation.getPropertyPath().toString();
             field = field.substring(field.lastIndexOf('.')+1); // returns the last component of the path
