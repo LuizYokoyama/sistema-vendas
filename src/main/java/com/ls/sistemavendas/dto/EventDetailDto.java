@@ -1,6 +1,5 @@
 package com.ls.sistemavendas.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.validation.constraints.*;
@@ -12,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class EventDto {
+public class EventDetailDto {
 
     public static final int PHOTO_MAX_SIZE = 3145728;  // 3 Mb
     public static final int NAME_MAX_SIZE = 80;
@@ -23,7 +22,6 @@ public class EventDto {
     public static final int DURATION_MAX_VALUE = 1000;
 
     @EqualsAndHashCode.Include
-    @JsonIgnore
     private UUID id;
 
     @NotBlank(message = "Forneça o nome do evento!")

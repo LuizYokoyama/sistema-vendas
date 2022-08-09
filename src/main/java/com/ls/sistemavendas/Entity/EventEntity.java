@@ -40,6 +40,10 @@ public class EventEntity {
     @JoinColumn(name = "event_id")
     private Set<StandEntity> standsList;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "agent_id")
+    private Set<CashierAgentEntity> agentsList;
+
     @Column(name = "admin_name", nullable = false)
     private String adminName;
 

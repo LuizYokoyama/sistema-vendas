@@ -1,7 +1,8 @@
 package com.ls.sistemavendas.controller;
 
 import com.ls.sistemavendas.Entity.EventEntity;
-import com.ls.sistemavendas.dto.FormDto;
+import com.ls.sistemavendas.dto.FormDetailsDto;
+import com.ls.sistemavendas.dto.FormRegisterDto;
 import com.ls.sistemavendas.service.IFormService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,29 +27,40 @@ public class FormController {
 
     @GetMapping("/events-full")
     @ApiOperation(value = "List of all events")
-    public List<FormDto> listFull(){
+    public List<FormRegisterDto> listFull(){
         return formService.findAllFull();
     }
 
     @PostMapping("/event")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Add a new event")
-    public ResponseEntity<FormDto> add(@RequestBody FormDto formDto){
-        return formService.save(formDto);
+    public ResponseEntity<FormDetailsDto> addEvent(@RequestBody FormRegisterDto formRegisterDto){
+        return formService.register(formRegisterDto);
     }
 
     @PutMapping("/event/{id}")
     @ApiOperation(value = "Update details of the event form")
-    public ResponseEntity<FormDto> updateEvent(@PathVariable(value = "id") UUID id,
-                                              @RequestBody FormDto formDto){
+    public ResponseEntity<FormDetailsDto> updateEvent(@PathVariable(value = "id") UUID id,
+                                                       @RequestBody FormDetailsDto formDetailsDto){
 
         Optional<EventEntity> eventEntityOptional = formService.findById(id);
         if (!eventEntityOptional.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
-        formDto.getEvent().setId(id);
+        formDetailsDto.getEvent().setId(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(formService.save(formDto).getBody());
+        return ResponseEntity.status(HttpStatus.OK).body(formService.update(formDetailsDto).getBody());
+    }
+
+    @GetMapping("/event/{id}")
+    @ApiOperation(value = "Get details of the event form")
+    public ResponseEntity<FormDetailsDto> getEvent(@PathVariable(value = "id") UUID id){
+
+        Optional<EventEntity> eventEntityOptional = formService.findById(id);
+        if (!eventEntityOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(formService.getEvent(id).getBody());
     }
 }

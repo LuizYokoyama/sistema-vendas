@@ -10,7 +10,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class FormDto {
+public class FormRegisterDto {
 
     @EqualsAndHashCode.Include
     @Valid

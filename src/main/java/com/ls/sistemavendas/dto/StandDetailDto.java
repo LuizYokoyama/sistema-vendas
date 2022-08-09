@@ -1,6 +1,5 @@
 package com.ls.sistemavendas.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.validation.Valid;
@@ -12,14 +11,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class StandDto {
+public class StandDetailDto {
 
     public static final int STAND_DESCRIPTION_MAX_SIZE = 150;
     public static final int STAND_TOTAL_AGENT_MIN_VALUE = 1;
     public static final int STAND_TOTAL_AGENT_MAX_VALUE = 900;
 
-    @JsonIgnore
     @EqualsAndHashCode.Include
     private UUID id;
 
@@ -28,7 +27,7 @@ public class StandDto {
     private int index;
 
     @Size(max = STAND_DESCRIPTION_MAX_SIZE, message = "A descrição deve ter até " + STAND_DESCRIPTION_MAX_SIZE +
-                                                    " caracteres!")
+            " caracteres!")
     @NotBlank(message = "Forneça a descrição da barraca!")
     private String description;
 
@@ -38,6 +37,8 @@ public class StandDto {
     private int totalAgents;
 
     @Valid
-    private Set<ProductDto> productsList;
+    private Set<ProductDetailDto> productsList;
 
+    @Valid
+    private Set<StandAgentDto> agentsList;
 }

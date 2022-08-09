@@ -1,6 +1,5 @@
 package com.ls.sistemavendas.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.validation.constraints.PositiveOrZero;
@@ -12,12 +11,11 @@ import java.util.UUID;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class ProductDto {
+public class ProductDetailDto {
 
     public static final int PRODUCT_DESCRIPTION_MAX_SIZE = 150;
 
     @EqualsAndHashCode.Include
-    @JsonIgnore
     private UUID id;
 
     @Size(max = PRODUCT_DESCRIPTION_MAX_SIZE, message = "A descrição do produto deve ter até "

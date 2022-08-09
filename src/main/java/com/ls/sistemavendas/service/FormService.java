@@ -1,8 +1,6 @@
 package com.ls.sistemavendas.service;
 
-import com.ls.sistemavendas.Entity.EventEntity;
-import com.ls.sistemavendas.Entity.ProductEntity;
-import com.ls.sistemavendas.Entity.StandEntity;
+import com.ls.sistemavendas.Entity.*;
 import com.ls.sistemavendas.dto.*;
 import com.ls.sistemavendas.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +23,23 @@ public class FormService implements IFormService {
 
     @Override
     @Transactional
-    public ResponseEntity<FormDto> save(@Valid FormDto formDto) {
+    public ResponseEntity<FormDetailsDto> register(@Valid FormRegisterDto formRegisterDto) {
 
-        EventEntity eventEntity = formDtoToEventEntity(formDto);
+        EventEntity eventEntity = formRegisterDtoToEventEntity(formRegisterDto);
         eventEntity = eventRepository.save(eventEntity);
-        formDto = eventEntityToFormDto(eventEntity);
+        FormDetailsDto formDetailsDto = eventEntityToFormDetailsDto(eventEntity);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(formDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(formDetailsDto);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<FormDetailsDto> update(FormDetailsDto formDetailsDto) {
+        EventEntity eventEntity = formDetailsDtoToEventEntity(formDetailsDto);
+        eventEntity = eventRepository.save(eventEntity);
+        formDetailsDto = eventEntityToFormDetailsDto(eventEntity);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(formDetailsDto);
     }
 
     @Override
@@ -45,9 +53,9 @@ public class FormService implements IFormService {
     }
 
     @Override
-    public FormDto eventEntityToFormDto(EventEntity eventEntity) {
+    public FormRegisterDto eventEntityToFormRegDto(EventEntity eventEntity) {
 
-        FormDto formDto = new FormDto();
+        FormRegisterDto formRegisterDto = new FormRegisterDto();
         Set<StandDto> standDtos = new HashSet<>();
 
         for (StandEntity standEntity : eventEntity.getStandsList() ){
@@ -66,25 +74,71 @@ public class FormService implements IFormService {
             standDtos.add(standDto);
         }
         System.out.println(standDtos.toString());
-        formDto.setStandsList(standDtos);
-        formDto.setEvent(new EventDto(eventEntity.getId(), eventEntity.getName(), eventEntity.getPhoto(),
+        formRegisterDto.setStandsList(standDtos);
+        formRegisterDto.setEvent(new EventDto(eventEntity.getId(), eventEntity.getName(), eventEntity.getPhoto(),
                 eventEntity.getDescription(), eventEntity.getTotalAgents(), eventEntity.getFirstOccurrenceDateTime(),
                 eventEntity.getDuration()));
-        formDto.setAdmin(new AdminDto(eventEntity.getAdminName(), eventEntity.getLogin(), eventEntity.getPassword(),
+        formRegisterDto.setAdmin(new AdminDto(eventEntity.getAdminName(), eventEntity.getLogin(), eventEntity.getPassword(),
                 eventEntity.getAvatar()));
 
-        return formDto;
+        return formRegisterDto;
 
     }
 
     @Override
-    public EventEntity formDtoToEventEntity(FormDto formDto) {
+    public FormDetailsDto eventEntityToFormDetailsDto(EventEntity eventEntity) {
+        FormDetailsDto formDetailsDto = new FormDetailsDto();
+        Set<StandDetailDto> standDtos = new HashSet<>();
+
+        for (StandEntity standEntity : eventEntity.getStandsList() ){
+            StandDetailDto standDto = new StandDetailDto();
+            Set<ProductDetailDto> productDtos = new HashSet<>();
+            for (ProductEntity productEntity : standEntity.getProductsList()){
+                ProductDetailDto productDto = new ProductDetailDto(productEntity.getId(),
+                        productEntity.getDescription(), productEntity.getPrice());
+                productDtos.add(productDto);
+            }
+            standDto.setProductsList(productDtos);
+            standDto.setDescription(standEntity.getDescription());
+            standDto.setId(standEntity.getId());
+            standDto.setIndex(standEntity.getIndex());
+            standDto.setTotalAgents(standEntity.getTotalAgents());
+            Set<StandAgentDto> standAgentDtos = new HashSet<>();
+            if (standEntity.getAgentsList() != null) {
+                for (StandAgentEntity standAgentEntity : standEntity.getAgentsList()) {
+                    StandAgentDto standAgentDto = new StandAgentDto(standAgentEntity.getId(), standAgentEntity.getName());
+                    standAgentDtos.add(standAgentDto);
+                }
+                standDto.setAgentsList(standAgentDtos);
+            }
+            standDtos.add(standDto);
+        }
+        formDetailsDto.setStandsList(standDtos);
+        formDetailsDto.setEvent(new EventDetailDto(eventEntity.getId(), eventEntity.getName(), eventEntity.getPhoto(),
+                eventEntity.getDescription(), eventEntity.getTotalAgents(), eventEntity.getFirstOccurrenceDateTime(),
+                eventEntity.getDuration()));
+        formDetailsDto.setAdmin(new AdminDto(eventEntity.getAdminName(), eventEntity.getLogin(),
+                eventEntity.getPassword(), eventEntity.getAvatar()));
+        Set<CashierAgentDto> agentDtos = new HashSet<>();
+        if (eventEntity.getAgentsList() != null){
+            for (CashierAgentEntity agentEntity : eventEntity.getAgentsList()) {
+                CashierAgentDto agentDto = new CashierAgentDto(agentEntity.getId(), agentEntity.getName());
+                agentDtos.add(agentDto);
+            }
+            formDetailsDto.setAgentsList(agentDtos);
+        }
+
+        return formDetailsDto;
+    }
+
+    @Override
+    public EventEntity formRegisterDtoToEventEntity(FormRegisterDto formRegisterDto) {
 
         EventEntity eventEntity = new EventEntity();
 
         Set<StandDto> standsDto;
         Set<StandEntity> standsEntity = new HashSet<>();
-        standsDto = formDto.getStandsList();
+        standsDto = formRegisterDto.getStandsList();
         for (StandDto standDto : standsDto){
             StandEntity standEntity = new StandEntity();
             standEntity.setIndex(standDto.getIndex());
@@ -105,20 +159,93 @@ public class FormService implements IFormService {
             standsEntity.add(standEntity);
         }
         eventEntity.setStandsList(standsEntity);
-        eventEntity.setName(formDto.getEvent().getEventName());
-        eventEntity.setPhoto(formDto.getEvent().getPhoto());
-        eventEntity.setTotalAgents(formDto.getEvent().getTotalAgents());
-        eventEntity.setAdminName(formDto.getAdmin().getName());
-        eventEntity.setAvatar(formDto.getAdmin().getAvatar());
-        eventEntity.setLogin(formDto.getAdmin().getLogin());
-        eventEntity.setPassword(formDto.getAdmin().getPassword());
-        eventEntity.setPhoto(formDto.getEvent().getPhoto());
-        eventEntity.setDuration(formDto.getEvent().getDuration());
-        eventEntity.setDescription(formDto.getEvent().getDescription());
-        eventEntity.setFirstOccurrenceDateTime(formDto.getEvent().getFirstOccurrenceDateTime());
-        eventEntity.setId(formDto.getEvent().getId());
+        eventEntity.setName(formRegisterDto.getEvent().getEventName());
+        eventEntity.setPhoto(formRegisterDto.getEvent().getPhoto());
+        eventEntity.setTotalAgents(formRegisterDto.getEvent().getTotalAgents());
+        eventEntity.setAdminName(formRegisterDto.getAdmin().getName());
+        eventEntity.setAvatar(formRegisterDto.getAdmin().getAvatar());
+        eventEntity.setLogin(formRegisterDto.getAdmin().getLogin());
+        eventEntity.setPassword(formRegisterDto.getAdmin().getPassword());
+        eventEntity.setPhoto(formRegisterDto.getEvent().getPhoto());
+        eventEntity.setDuration(formRegisterDto.getEvent().getDuration());
+        eventEntity.setDescription(formRegisterDto.getEvent().getDescription());
+        eventEntity.setFirstOccurrenceDateTime(formRegisterDto.getEvent().getFirstOccurrenceDateTime());
+        eventEntity.setId(formRegisterDto.getEvent().getId());
 
         return eventEntity;
+    }
+
+    @Override
+    public EventEntity formDetailsDtoToEventEntity(FormDetailsDto formDetailsDto) {
+        EventEntity eventEntity = new EventEntity();
+
+        Set<StandDetailDto> standsDto;
+        Set<StandEntity> standsEntity = new HashSet<>();
+        standsDto = formDetailsDto.getStandsList();
+        for (StandDetailDto standDto : standsDto){
+            StandEntity standEntity = new StandEntity();
+            standEntity.setIndex(standDto.getIndex());
+            standEntity.setId(standDto.getId());
+            standEntity.setEvent(eventEntity);
+            standEntity.setDescription(standDto.getDescription());
+            standEntity.setTotalAgents(standDto.getTotalAgents());
+            Set<ProductEntity> productEntities = new HashSet<>();
+            for (ProductDetailDto productDto : standDto.getProductsList()){
+                ProductEntity productEntity = new ProductEntity();
+                productEntity.setId(productDto.getId());
+                productEntity.setDescription(productDto.getDescription());
+                productEntity.setPrice(productDto.getPrice());
+                productEntity.setStand(standEntity);
+                productEntities.add(productEntity);
+            }
+            standEntity.setProductsList(productEntities);
+            if (standDto.getAgentsList() != null){
+                Set<StandAgentEntity> standAgentEntities = new HashSet<>();
+                for (StandAgentDto standAgentDto : standDto.getAgentsList()){
+                    StandAgentEntity standAgentEntity = new StandAgentEntity();
+                    standAgentEntity.setId(standAgentDto.getId());
+                    standAgentEntity.setName(standAgentDto.getAgentName());
+                    standAgentEntity.setStand(standEntity);
+                    standAgentEntities.add(standAgentEntity);
+                }
+                standEntity.setAgentsList(standAgentEntities);
+            }
+            standsEntity.add(standEntity);
+        }
+        eventEntity.setStandsList(standsEntity);
+        eventEntity.setName(formDetailsDto.getEvent().getEventName());
+        eventEntity.setPhoto(formDetailsDto.getEvent().getPhoto());
+        eventEntity.setTotalAgents(formDetailsDto.getEvent().getTotalAgents());
+        eventEntity.setAdminName(formDetailsDto.getAdmin().getName());
+        eventEntity.setAvatar(formDetailsDto.getAdmin().getAvatar());
+        eventEntity.setLogin(formDetailsDto.getAdmin().getLogin());
+        eventEntity.setPassword(formDetailsDto.getAdmin().getPassword());
+        eventEntity.setPhoto(formDetailsDto.getEvent().getPhoto());
+        eventEntity.setDuration(formDetailsDto.getEvent().getDuration());
+        eventEntity.setDescription(formDetailsDto.getEvent().getDescription());
+        eventEntity.setFirstOccurrenceDateTime(formDetailsDto.getEvent().getFirstOccurrenceDateTime());
+        eventEntity.setId(formDetailsDto.getEvent().getId());
+
+        if (formDetailsDto.getAgentsList() != null) {
+            Set<CashierAgentEntity> cashierAgentEntities = new HashSet<>();
+            for (CashierAgentDto agentDto : formDetailsDto.getAgentsList()) {
+                CashierAgentEntity agentEntity = new CashierAgentEntity(agentDto.getId(), agentDto.getAgentName(),
+                        eventEntity);
+                cashierAgentEntities.add(agentEntity);
+            }
+            eventEntity.setAgentsList(cashierAgentEntities);
+        }
+
+        return eventEntity;
+
+    }
+
+    @Override
+    public ResponseEntity<FormDetailsDto> getEvent(UUID id) {
+
+        EventEntity eventEntity = eventRepository.findById(id).get();
+        FormDetailsDto formDetailsDto = eventEntityToFormDetailsDto(eventEntity);
+        return ResponseEntity.status(HttpStatus.OK).body(formDetailsDto);
     }
 
 }

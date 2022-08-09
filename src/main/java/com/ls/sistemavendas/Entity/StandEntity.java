@@ -32,6 +32,10 @@ public class StandEntity {
     @JoinColumn(name = "stand_id")
     private Set<ProductEntity> productsList;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "agent_id")
+    private Set<StandAgentEntity> agentsList;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "event_id")

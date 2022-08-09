@@ -5,7 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ls.sistemavendas.Entity.EventEntity;
 import com.ls.sistemavendas.Entity.ProductEntity;
 import com.ls.sistemavendas.Entity.StandEntity;
-import com.ls.sistemavendas.dto.FormDto;
+import com.ls.sistemavendas.dto.FormRegisterDto;
 import com.ls.sistemavendas.dto.ProductDto;
 import com.ls.sistemavendas.dto.StandDto;
 import com.ls.sistemavendas.repository.EventRepository;
@@ -31,25 +31,25 @@ public class FormServiceTest {
     @Test
     void teste() throws IOException {
         final var json = Paths.get("src", "test", "resources", "input.json");
-        final var formDto = new ObjectMapper().registerModule(new JavaTimeModule()).readValue(json.toFile(), FormDto.class);
+        final var formDto = new ObjectMapper().registerModule(new JavaTimeModule()).readValue(json.toFile(), FormRegisterDto.class);
         save(formDto);
     }
 
     @ParameterizedTest
-    public void save(FormDto formDto) {
-        EventEntity eventEntity = formDtoToEntity(formDto);
+    public void save(FormRegisterDto formRegisterDto) {
+        EventEntity eventEntity = formDtoToEntity(formRegisterDto);
         eventRepository.save(eventEntity);
 
         assertEquals(1.0, eventRepository.count());
 
     }
 
-    private EventEntity formDtoToEntity(FormDto formDto) {
+    private EventEntity formDtoToEntity(FormRegisterDto formRegisterDto) {
         EventEntity eventEntity = new EventEntity();
 
         Set<StandDto> standsDto;
         Set<StandEntity> standsEntity = new HashSet<>();
-        standsDto = formDto.getStandsList();
+        standsDto = formRegisterDto.getStandsList();
         for (StandDto standDto : standsDto){
             StandEntity standEntity = new StandEntity();
             standEntity.setIndex(standDto.getIndex());
@@ -66,18 +66,18 @@ public class FormServiceTest {
             standsEntity.add(standEntity);
         }
         eventEntity.setStandsList(standsEntity);
-        eventEntity.setName(formDto.getEvent().getEventName());
-        eventEntity.setPhoto(formDto.getEvent().getPhoto());
-        eventEntity.setTotalAgents(formDto.getEvent().getTotalAgents());
-        eventEntity.setAdminName(formDto.getAdmin().getName());
-        eventEntity.setAvatar(formDto.getAdmin().getAvatar());
-        eventEntity.setLogin(formDto.getAdmin().getLogin());
-        eventEntity.setPassword(formDto.getAdmin().getPassword());
-        eventEntity.setPhoto(formDto.getEvent().getPhoto());
-        eventEntity.setDuration(formDto.getEvent().getDuration());
-        eventEntity.setDescription(formDto.getEvent().getDescription());
-        eventEntity.setFirstOccurrenceDateTime(formDto.getEvent().getFirstOccurrenceDateTime());
-        eventEntity.setId(formDto.getEvent().getId());
+        eventEntity.setName(formRegisterDto.getEvent().getEventName());
+        eventEntity.setPhoto(formRegisterDto.getEvent().getPhoto());
+        eventEntity.setTotalAgents(formRegisterDto.getEvent().getTotalAgents());
+        eventEntity.setAdminName(formRegisterDto.getAdmin().getName());
+        eventEntity.setAvatar(formRegisterDto.getAdmin().getAvatar());
+        eventEntity.setLogin(formRegisterDto.getAdmin().getLogin());
+        eventEntity.setPassword(formRegisterDto.getAdmin().getPassword());
+        eventEntity.setPhoto(formRegisterDto.getEvent().getPhoto());
+        eventEntity.setDuration(formRegisterDto.getEvent().getDuration());
+        eventEntity.setDescription(formRegisterDto.getEvent().getDescription());
+        eventEntity.setFirstOccurrenceDateTime(formRegisterDto.getEvent().getFirstOccurrenceDateTime());
+        eventEntity.setId(formRegisterDto.getEvent().getId());
 
         return eventEntity;
     }
