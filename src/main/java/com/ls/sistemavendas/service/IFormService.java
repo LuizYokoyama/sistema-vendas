@@ -1,8 +1,10 @@
 package com.ls.sistemavendas.service;
 
 import com.ls.sistemavendas.Entity.EventEntity;
+import com.ls.sistemavendas.dto.EventAgentDto;
 import com.ls.sistemavendas.dto.FormDetailsDto;
 import com.ls.sistemavendas.dto.FormRegisterDto;
+import com.ls.sistemavendas.dto.StandAgentDto;
 import org.springframework.http.ResponseEntity;
 
 import javax.validation.Valid;
@@ -31,4 +33,8 @@ public interface IFormService {
 
 
     ResponseEntity<FormDetailsDto> getEvent(UUID id);
+
+    ResponseEntity<StandAgentDto> newStandAgent();
+
+    ResponseEntity<EventAgentDto> newEventAgent();
 }

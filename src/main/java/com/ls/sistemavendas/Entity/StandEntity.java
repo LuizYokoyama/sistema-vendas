@@ -33,7 +33,7 @@ public class StandEntity {
     private Set<ProductEntity> productsList;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "agent_id")
+    @JoinColumn(name = "stand_id")
     private Set<StandAgentEntity> agentsList;
 
     @ManyToOne(fetch = FetchType.LAZY)

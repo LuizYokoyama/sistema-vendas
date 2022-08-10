@@ -41,8 +41,8 @@ public class EventEntity {
     private Set<StandEntity> standsList;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "agent_id")
-    private Set<CashierAgentEntity> agentsList;
+    @JoinColumn(name = "event_id")
+    private Set<EventAgentEntity> agentsList;
 
     @Column(name = "admin_name", nullable = false)
     private String adminName;

@@ -2,7 +2,10 @@ package com.ls.sistemavendas.service;
 
 import com.ls.sistemavendas.Entity.*;
 import com.ls.sistemavendas.dto.*;
+import com.ls.sistemavendas.repository.EventAgentRepository;
 import com.ls.sistemavendas.repository.EventRepository;
+import com.ls.sistemavendas.repository.StandAgentRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,12 @@ public class FormService implements IFormService {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private EventAgentRepository eventAgentRepository;
+
+    @Autowired
+    private StandAgentRepository standAgentRepository;
 
     @Override
     @Transactional
@@ -119,10 +128,10 @@ public class FormService implements IFormService {
                 eventEntity.getDuration()));
         formDetailsDto.setAdmin(new AdminDto(eventEntity.getAdminName(), eventEntity.getLogin(),
                 eventEntity.getPassword(), eventEntity.getAvatar()));
-        Set<CashierAgentDto> agentDtos = new HashSet<>();
+        Set<EventAgentDto> agentDtos = new HashSet<>();
         if (eventEntity.getAgentsList() != null){
-            for (CashierAgentEntity agentEntity : eventEntity.getAgentsList()) {
-                CashierAgentDto agentDto = new CashierAgentDto(agentEntity.getId(), agentEntity.getName());
+            for (EventAgentEntity agentEntity : eventEntity.getAgentsList()) {
+                EventAgentDto agentDto = new EventAgentDto(agentEntity.getId(), agentEntity.getName());
                 agentDtos.add(agentDto);
             }
             formDetailsDto.setAgentsList(agentDtos);
@@ -227,9 +236,9 @@ public class FormService implements IFormService {
         eventEntity.setId(formDetailsDto.getEvent().getId());
 
         if (formDetailsDto.getAgentsList() != null) {
-            Set<CashierAgentEntity> cashierAgentEntities = new HashSet<>();
-            for (CashierAgentDto agentDto : formDetailsDto.getAgentsList()) {
-                CashierAgentEntity agentEntity = new CashierAgentEntity(agentDto.getId(), agentDto.getAgentName(),
+            Set<EventAgentEntity> cashierAgentEntities = new HashSet<>();
+            for (EventAgentDto agentDto : formDetailsDto.getAgentsList()) {
+                EventAgentEntity agentEntity = new EventAgentEntity(agentDto.getId(), agentDto.getAgentName(),
                         eventEntity);
                 cashierAgentEntities.add(agentEntity);
             }
@@ -246,6 +255,28 @@ public class FormService implements IFormService {
         EventEntity eventEntity = eventRepository.findById(id).get();
         FormDetailsDto formDetailsDto = eventEntityToFormDetailsDto(eventEntity);
         return ResponseEntity.status(HttpStatus.OK).body(formDetailsDto);
+    }
+
+    @Override
+    public ResponseEntity<StandAgentDto> newStandAgent() {
+
+        StandAgentEntity standAgentEntity = new StandAgentEntity();
+        standAgentEntity = standAgentRepository.save(standAgentEntity);
+
+        StandAgentDto standAgentDto = new StandAgentDto();
+        BeanUtils.copyProperties(standAgentEntity, standAgentDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(standAgentDto);
+    }
+
+    @Override
+    public ResponseEntity<EventAgentDto> newEventAgent() {
+
+        EventAgentEntity eventAgentEntity = new EventAgentEntity();
+        eventAgentEntity = eventAgentRepository.save(eventAgentEntity);
+
+        EventAgentDto eventAgentDto = new EventAgentDto();
+        BeanUtils.copyProperties(eventAgentEntity, eventAgentDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(eventAgentDto);
     }
 
 }

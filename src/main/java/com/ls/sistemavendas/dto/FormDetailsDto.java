@@ -23,5 +23,5 @@ public class FormDetailsDto {
     Set<StandDetailDto> standsList;
 
     @Valid
-    Set<CashierAgentDto> agentsList;
+    Set<EventAgentDto> agentsList;
 }

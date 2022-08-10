@@ -10,7 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class CashierAgentDto {
+public class EventAgentDto {
 
     public static final int NAME_MAX_SIZE = 80;
 

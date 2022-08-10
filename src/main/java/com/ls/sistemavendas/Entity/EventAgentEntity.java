@@ -7,14 +7,14 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name="TB_AGENT")
+@Table(name="TB_EVENT_AGENT")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class CashierAgentEntity {
+public class EventAgentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name="TB_AGENT")
+@Table(name="TB_STAND_AGENT")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
