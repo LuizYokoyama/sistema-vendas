@@ -34,6 +34,7 @@ public class FormService implements IFormService {
     @Transactional
     public ResponseEntity<FormDetailsDto> register(@Valid FormRegisterDto formRegisterDto) {
 
+        String eventName = eventRepository.getEventByName(formRegisterDto.getEvent().getEventName());
         EventEntity eventEntity = formRegisterDtoToEventEntity(formRegisterDto);
         eventEntity = eventRepository.save(eventEntity);
         FormDetailsDto formDetailsDto = eventEntityToFormDetailsDto(eventEntity);
@@ -258,25 +259,25 @@ public class FormService implements IFormService {
     }
 
     @Override
-    public ResponseEntity<StandAgentDto> newStandAgent() {
+    public ResponseEntity<UUID> newStandAgent() {
 
         StandAgentEntity standAgentEntity = new StandAgentEntity();
         standAgentEntity = standAgentRepository.save(standAgentEntity);
 
         StandAgentDto standAgentDto = new StandAgentDto();
         BeanUtils.copyProperties(standAgentEntity, standAgentDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(standAgentDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(standAgentDto.getId());
     }
 
     @Override
-    public ResponseEntity<EventAgentDto> newEventAgent() {
+    public ResponseEntity<UUID> newEventAgent() {
 
         EventAgentEntity eventAgentEntity = new EventAgentEntity();
         eventAgentEntity = eventAgentRepository.save(eventAgentEntity);
 
         EventAgentDto eventAgentDto = new EventAgentDto();
         BeanUtils.copyProperties(eventAgentEntity, eventAgentDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(eventAgentDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(eventAgentDto.getId());
     }
 
 }

@@ -15,4 +15,7 @@ public interface EventRepository extends JpaRepository<EventEntity, UUID> {
     @Query("SELECT new com.ls.sistemavendas.dto.HomeScreenEventDto(id, name, photo, description) FROM EventEntity ")
     public List<HomeScreenEventDto> getAllEventsShortList();
 
+    @Query("SELECT e.name FROM EventEntity e WHERE e.name = ?1")
+    public String getEventByName(String name);
+
 }

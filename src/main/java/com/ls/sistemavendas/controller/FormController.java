@@ -1,10 +1,8 @@
 package com.ls.sistemavendas.controller;
 
 import com.ls.sistemavendas.Entity.EventEntity;
-import com.ls.sistemavendas.dto.EventAgentDto;
 import com.ls.sistemavendas.dto.FormDetailsDto;
 import com.ls.sistemavendas.dto.FormRegisterDto;
-import com.ls.sistemavendas.dto.StandAgentDto;
 import com.ls.sistemavendas.service.IFormService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -40,15 +38,15 @@ public class FormController {
         return formService.register(formRegisterDto);
     }
 
-    @PutMapping("/event")
+    @PutMapping("/event/{id}")
     @ApiOperation(value = "Update details of the event form")
-    public ResponseEntity<FormDetailsDto> updateEvent(@RequestBody FormDetailsDto formDetailsDto){
+    public ResponseEntity<FormDetailsDto> updateEvent(@PathVariable(value = "id") UUID id, @RequestBody FormDetailsDto formDetailsDto){
 
-        Optional<EventEntity> eventEntityOptional = formService.findById(formDetailsDto.getEvent().getId());
+        Optional<EventEntity> eventEntityOptional = formService.findById(id);
         if (!eventEntityOptional.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-
+        formDetailsDto.getEvent().setId(id);
         return formService.update(formDetailsDto);
     }
 
@@ -65,13 +63,13 @@ public class FormController {
 
     @PostMapping("/agent/new-stand-agent")
     @ApiOperation(value = "Get new stand agent hashcode id")
-    public ResponseEntity<StandAgentDto> getNewStandAgent(){
+    public ResponseEntity<UUID> getNewStandAgent(){
         return formService.newStandAgent();
     }
 
     @PostMapping("/agent/new-event-agent")
     @ApiOperation(value = "Get new event agent hashcode id")
-    public  ResponseEntity<EventAgentDto> getNewEventAgent(){
+    public  ResponseEntity<UUID> getNewEventAgent(){
         return formService.newEventAgent();
     }
 }

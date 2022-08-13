@@ -1,6 +1,7 @@
 package com.ls.sistemavendas.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ls.sistemavendas.annotations.EventRepeatedConstraint;
 import lombok.*;
 
 import javax.validation.constraints.*;
@@ -28,6 +29,7 @@ public class EventDto {
 
     @NotBlank(message = "Forneça o nome do evento!")
     @Size(max = NAME_MAX_SIZE)
+    @EventRepeatedConstraint
     private String eventName;
 
     @Size(max = PHOTO_MAX_SIZE, message = "Utilize uma imagem de tamanho menor!")

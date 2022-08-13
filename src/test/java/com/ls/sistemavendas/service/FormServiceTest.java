@@ -10,10 +10,10 @@ import com.ls.sistemavendas.dto.ProductDto;
 import com.ls.sistemavendas.dto.StandDto;
 import com.ls.sistemavendas.repository.EventRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.HashSet;
@@ -29,14 +29,14 @@ public class FormServiceTest {
     private EventRepository eventRepository;
 
     @Test
-    void teste() throws IOException {
+    void test() throws IOException {
         final var json = Paths.get("src", "test", "resources", "input.json");
         final var formDto = new ObjectMapper().registerModule(new JavaTimeModule()).readValue(json.toFile(), FormRegisterDto.class);
         save(formDto);
     }
 
-    @ParameterizedTest
-    public void save(FormRegisterDto formRegisterDto) {
+    @Test
+    public void save(@Valid FormRegisterDto formRegisterDto) {
         EventEntity eventEntity = formDtoToEntity(formRegisterDto);
         eventRepository.save(eventEntity);
 
