@@ -62,13 +62,13 @@ public class FormController {
 
     @PostMapping("/agent/new-stand-agent")
     @ApiOperation(value = "Get new stand agent hashcode id")
-    public ResponseEntity<UUID> getNewStandAgent(){
+    public ResponseEntity<String> getNewStandAgent(){
         return formService.newStandAgent();
     }
 
     @PostMapping("/agent/new-event-agent")
     @ApiOperation(value = "Get new event agent hashcode id")
-    public  ResponseEntity<UUID> getNewEventAgent(){
+    public  ResponseEntity<String> getNewEventAgent(){
         return formService.newEventAgent();
     }
 }

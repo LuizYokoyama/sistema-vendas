@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 @Entity
 @Table(name="TB_STAND_AGENT")
@@ -17,10 +16,9 @@ import java.util.UUID;
 public class StandAgentEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "agent_id")
     @EqualsAndHashCode.Include
-    private UUID id;
+    private String id;
 
     @Column(name = "agent_name")
     private String name;

@@ -6,7 +6,7 @@ import lombok.*;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -28,7 +28,8 @@ public class TransactionItemDto {
     private UUID productID;
 
     @FutureOrPresent(message = "Forneça a data atual!")
-    private LocalDateTime dateTime;
+    @JsonIgnore
+    private Timestamp dateTime;
 
 }
 

@@ -3,7 +3,7 @@ package com.ls.sistemavendas.dto;
 import lombok.*;
 
 import javax.validation.Valid;
-import java.util.Set;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,5 +16,5 @@ public class TransactionDto {
     private String participantCode;
 
     @Valid
-    private Set<TransactionItemDto> items;
+    private List<TransactionItemDto> items;
 }

@@ -32,7 +32,7 @@ public interface IFormService {
 
     ResponseEntity<FormDetailsDto> getEvent(UUID id);
 
-    ResponseEntity<UUID> newStandAgent();
+    ResponseEntity<String> newStandAgent();
 
-    ResponseEntity<UUID> newEventAgent();
+    ResponseEntity<String> newEventAgent();
 }

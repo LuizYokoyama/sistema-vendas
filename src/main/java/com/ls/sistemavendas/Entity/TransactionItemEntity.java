@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
@@ -29,8 +29,9 @@ public class TransactionItemEntity {
     @JoinColumn(foreignKey = @ForeignKey(name = "product_FK"), name = "product_id", referencedColumnName = "product_id")
     private UUID product;
 
-    @Column(nullable = false)
-    private LocalDateTime dateTime;
+    @Column(name="timestamp", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+            insertable=false, updatable=false, nullable = false)
+    private Timestamp dateTime;
 
     @JoinColumn(foreignKey = @ForeignKey(name = "participant_FK"),
             name = "participant_id", referencedColumnName = "participant_id")

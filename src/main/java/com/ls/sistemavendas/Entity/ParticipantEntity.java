@@ -3,7 +3,7 @@ package com.ls.sistemavendas.Entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "TB_PARTICIPANT")
@@ -27,5 +27,5 @@ public class ParticipantEntity {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "participant_id")
-    private Set<TransactionItemEntity> items;
+    private List<TransactionItemEntity> items;
 }

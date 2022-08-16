@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -20,6 +21,8 @@ import java.util.*;
 @Service
 @Validated
 public class FormService implements IFormService {
+
+    final int SHORT_ID_LENGTH = 8;
 
     @Autowired
     private EventRepository eventRepository;
@@ -258,9 +261,10 @@ public class FormService implements IFormService {
     }
 
     @Override
-    public ResponseEntity<UUID> newStandAgent() {
+    public ResponseEntity<String> newStandAgent() {
 
         StandAgentEntity standAgentEntity = new StandAgentEntity();
+        standAgentEntity.setId(RandomStringUtils.randomAlphanumeric(SHORT_ID_LENGTH));
         standAgentEntity = standAgentRepository.save(standAgentEntity);
 
         StandAgentDto standAgentDto = new StandAgentDto();
@@ -269,9 +273,10 @@ public class FormService implements IFormService {
     }
 
     @Override
-    public ResponseEntity<UUID> newEventAgent() {
+    public ResponseEntity<String> newEventAgent() {
 
         EventAgentEntity eventAgentEntity = new EventAgentEntity();
+        eventAgentEntity.setId(RandomStringUtils.randomAlphanumeric(SHORT_ID_LENGTH));
         eventAgentEntity = eventAgentRepository.save(eventAgentEntity);
 
         EventAgentDto eventAgentDto = new EventAgentDto();
