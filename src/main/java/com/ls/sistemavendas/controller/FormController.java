@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-
 @RequestMapping("/api")
 @Api(value="Events Form API REST")
 @CrossOrigin(origins = "*")

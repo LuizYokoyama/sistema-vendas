@@ -35,7 +35,7 @@ public class StandDto {
     @NotNull(message = "Forneça a quantidade de agentes desta barraca!")
     @Min(value = STAND_TOTAL_AGENT_MIN_VALUE, message = "Insira no mínimo " + STAND_TOTAL_AGENT_MIN_VALUE + " agente!")
     @Max(value = STAND_TOTAL_AGENT_MAX_VALUE, message = "Insira no máximo " + STAND_TOTAL_AGENT_MAX_VALUE + " agentes!")
-    private int totalAgents;
+    private int standTotalAgents;
 
     @Valid
     private Set<ProductDto> productsList;

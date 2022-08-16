@@ -34,7 +34,6 @@ public class FormService implements IFormService {
     @Transactional
     public ResponseEntity<FormDetailsDto> register(@Valid FormRegisterDto formRegisterDto) {
 
-        String eventName = eventRepository.getEventByName(formRegisterDto.getEvent().getEventName());
         EventEntity eventEntity = formRegisterDtoToEventEntity(formRegisterDto);
         eventEntity = eventRepository.save(eventEntity);
         FormDetailsDto formDetailsDto = eventEntityToFormDetailsDto(eventEntity);
@@ -45,6 +44,7 @@ public class FormService implements IFormService {
     @Override
     @Transactional
     public ResponseEntity<FormDetailsDto> update(FormDetailsDto formDetailsDto) {
+
         EventEntity eventEntity = formDetailsDtoToEventEntity(formDetailsDto);
         eventEntity = eventRepository.save(eventEntity);
         formDetailsDto = eventEntityToFormDetailsDto(eventEntity);
@@ -80,10 +80,9 @@ public class FormService implements IFormService {
             standDto.setDescription(standEntity.getDescription());
             standDto.setId(standEntity.getId());
             standDto.setIndex(standEntity.getIndex());
-            standDto.setTotalAgents(standEntity.getTotalAgents());
+            standDto.setStandTotalAgents(standEntity.getTotalAgents());
             standDtos.add(standDto);
         }
-        System.out.println(standDtos.toString());
         formRegisterDto.setStandsList(standDtos);
         formRegisterDto.setEvent(new EventDto(eventEntity.getId(), eventEntity.getName(), eventEntity.getPhoto(),
                 eventEntity.getDescription(), eventEntity.getTotalAgents(), eventEntity.getFirstOccurrenceDateTime(),
@@ -112,7 +111,7 @@ public class FormService implements IFormService {
             standDto.setDescription(standEntity.getDescription());
             standDto.setId(standEntity.getId());
             standDto.setIndex(standEntity.getIndex());
-            standDto.setTotalAgents(standEntity.getTotalAgents());
+            standDto.setStandTotalAgents(standEntity.getTotalAgents());
             Set<StandAgentDto> standAgentDtos = new HashSet<>();
             if (standEntity.getAgentsList() != null) {
                 for (StandAgentEntity standAgentEntity : standEntity.getAgentsList()) {
@@ -155,7 +154,7 @@ public class FormService implements IFormService {
             standEntity.setId(standDto.getId());
             standEntity.setEvent(eventEntity);
             standEntity.setDescription(standDto.getDescription());
-            standEntity.setTotalAgents(standDto.getTotalAgents());
+            standEntity.setTotalAgents(standDto.getStandTotalAgents());
             Set<ProductEntity> productEntities = new HashSet<>();
             for (ProductDto productDto : standDto.getProductsList()){
                 ProductEntity productEntity = new ProductEntity();
@@ -198,7 +197,7 @@ public class FormService implements IFormService {
             standEntity.setId(standDto.getId());
             standEntity.setEvent(eventEntity);
             standEntity.setDescription(standDto.getDescription());
-            standEntity.setTotalAgents(standDto.getTotalAgents());
+            standEntity.setTotalAgents(standDto.getStandTotalAgents());
             Set<ProductEntity> productEntities = new HashSet<>();
             for (ProductDetailDto productDto : standDto.getProductsList()){
                 ProductEntity productEntity = new ProductEntity();

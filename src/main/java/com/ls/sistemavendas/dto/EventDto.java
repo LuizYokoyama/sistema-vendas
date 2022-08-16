@@ -2,6 +2,7 @@ package com.ls.sistemavendas.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ls.sistemavendas.annotations.EventRepeatedConstraint;
+import com.ls.sistemavendas.annotations.EventSameTimeConstraint;
 import lombok.*;
 
 import javax.validation.constraints.*;
@@ -44,6 +45,7 @@ public class EventDto {
     private int totalAgents;
 
     @FutureOrPresent(message = "Forneça uma data futura para o evento!")
+    @EventSameTimeConstraint
     private LocalDateTime firstOccurrenceDateTime;
 
     @Min(value = DURATION_MIN_VALUE, message = "Forneça uma duração maior!")

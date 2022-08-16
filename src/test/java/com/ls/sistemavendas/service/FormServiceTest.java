@@ -13,13 +13,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.validation.Valid;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
 @SpringBootTest
@@ -28,13 +30,18 @@ public class FormServiceTest {
     @Autowired
     private EventRepository eventRepository;
 
+    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+
     @Test
     void test() throws IOException {
         final var json = Paths.get("src", "test", "resources", "input.json");
         final var formDto = new ObjectMapper().registerModule(new JavaTimeModule()).readValue(json.toFile(), FormRegisterDto.class);
-        save(formDto);
+
+        Set<ConstraintViolation<FormRegisterDto>> violations = validator.validate(formDto);
+        assertThat(violations.size()).isEqualTo(1);
     }
 
+/*
     @Test
     public void save(@Valid FormRegisterDto formRegisterDto) {
         EventEntity eventEntity = formDtoToEntity(formRegisterDto);
@@ -42,7 +49,7 @@ public class FormServiceTest {
 
         assertEquals(1.0, eventRepository.count());
 
-    }
+    }*/
 
     private EventEntity formDtoToEntity(FormRegisterDto formRegisterDto) {
         EventEntity eventEntity = new EventEntity();
@@ -53,13 +60,17 @@ public class FormServiceTest {
         for (StandDto standDto : standsDto){
             StandEntity standEntity = new StandEntity();
             standEntity.setIndex(standDto.getIndex());
+            standEntity.setId(standDto.getId());
+            standEntity.setEvent(eventEntity);
             standEntity.setDescription(standDto.getDescription());
-            standEntity.setTotalAgents(standDto.getTotalAgents());
+            standEntity.setTotalAgents(standDto.getStandTotalAgents());
             Set<ProductEntity> productEntities = new HashSet<>();
             for (ProductDto productDto : standDto.getProductsList()){
                 ProductEntity productEntity = new ProductEntity();
+                productEntity.setId(productDto.getId());
                 productEntity.setDescription(productDto.getDescription());
                 productEntity.setPrice(productDto.getPrice());
+                productEntity.setStand(standEntity);
                 productEntities.add(productEntity);
             }
             standEntity.setProductsList(productEntities);
