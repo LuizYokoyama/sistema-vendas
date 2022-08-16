@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -31,5 +32,10 @@ public class ProductEntity {
     @JsonIgnore
     @JoinColumn(name = "stand_id")
     private StandEntity stand;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "product_id")
+    @JsonIgnore
+    private Set<TransactionItemEntity> transactionItemEntities;
 
 }

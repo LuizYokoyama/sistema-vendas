@@ -1,7 +1,6 @@
 package com.ls.sistemavendas.service;
 
 import com.ls.sistemavendas.Entity.ParticipantEntity;
-import com.ls.sistemavendas.Entity.TransactionEntity;
 import com.ls.sistemavendas.dto.ParticipantDto;
 import com.ls.sistemavendas.dto.TransactionDto;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +13,5 @@ public interface IParticipantService {
 
     public ParticipantEntity participantDtoToEntity(ParticipantDto participantDto);
     public ParticipantDto participantEntityToDto(ParticipantEntity participantEntity);
-
-    public TransactionDto trasactionEntityToDto(TransactionEntity transactionEntity);
-
-    public TransactionEntity transactionDtoToEntity(TransactionDto transactionDto);
+    ResponseEntity<ParticipantDto> newParticipant(ParticipantDto participantDto);
 }

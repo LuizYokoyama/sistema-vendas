@@ -25,19 +25,17 @@ public class TransactionItemEntity {
     @Column(nullable = false)
     private int quantity;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private ProductEntity product;
-
-    @Column(nullable = false)
-    private boolean paid;
+    @Column(name = "product_id", nullable = false)
+    @JoinColumn(foreignKey = @ForeignKey(name = "product_FK"), name = "product_id", referencedColumnName = "product_id")
+    private UUID product;
 
     @Column(nullable = false)
     private LocalDateTime dateTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transaction_id")
+    @JoinColumn(foreignKey = @ForeignKey(name = "participant_FK"),
+            name = "participant_id", referencedColumnName = "participant_id")
     @JsonIgnore
-    private TransactionEntity transaction;
+    @Column(name = "participant_id", nullable = false)
+    private String participantCode;
 
 }

@@ -1,11 +1,12 @@
 package com.ls.sistemavendas.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.UUID;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,15 +15,14 @@ import java.util.UUID;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ParticipantDto {
 
-    public static final int NAME_MAX_SIZE = 80;
-    public static final int CODE_MAX_SIZE = 30;
-    public static final int PASSWORD_MAX_SIZE = 15;
+    public static final int NAME_MAX_SIZE = 40;
+    public static final int CODE_MAX_SIZE = 20;
+    public static final int PASSWORD_MAX_SIZE = 8;
 
     @EqualsAndHashCode.Include
-    private UUID id;
-
+    @NotBlank(message = "Forneça o código do participante!")
     @Size(max = CODE_MAX_SIZE)
-    private String code;
+    private String participantCode;
 
     @NotBlank(message = "Forneça o nome do participante!")
     @Size(max = NAME_MAX_SIZE)
@@ -33,5 +33,6 @@ public class ParticipantDto {
     private String password;
 
     @Valid
-    private TransactionDto transactions;
+    @JsonIgnore
+    private Set<TransactionItemDto> items;
 }

@@ -1,5 +1,6 @@
 package com.ls.sistemavendas.controller;
 
+import com.ls.sistemavendas.dto.ParticipantDto;
 import com.ls.sistemavendas.dto.TransactionDto;
 import com.ls.sistemavendas.service.IParticipantService;
 import io.swagger.annotations.Api;
@@ -23,5 +24,12 @@ public class ParticipantController {
     @ApiOperation(value = "Add new transactions items to the participant.")
     public ResponseEntity<TransactionDto> sell(@RequestBody TransactionDto transactionDto){
         return participantService.newTransaction(transactionDto);
+    }
+
+    @PostMapping("/participant")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Add a new participant.")
+    public ResponseEntity<ParticipantDto> sell(@RequestBody ParticipantDto participantDto){
+        return participantService.newParticipant(participantDto);
     }
 }

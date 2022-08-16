@@ -24,9 +24,10 @@ public class TransactionItemDto {
     @Positive(message = "Forneça uma quantidade maior que zero!")
     private int quantity;
 
-    private UUID productId;
+    @NotNull
+    private UUID productID;
 
-    @FutureOrPresent(message = "Forneça uma data atual!")
+    @FutureOrPresent(message = "Forneça a data atual!")
     private LocalDateTime dateTime;
 
 }
