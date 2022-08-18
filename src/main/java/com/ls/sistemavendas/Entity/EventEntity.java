@@ -34,7 +34,7 @@ public class EventEntity {
 
     private LocalDateTime firstOccurrenceDateTime;
 
-    private float duration;
+    private int duration;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "event_id")

@@ -2,9 +2,12 @@ package com.ls.sistemavendas.service;
 
 import com.ls.sistemavendas.Entity.*;
 import com.ls.sistemavendas.dto.*;
+import com.ls.sistemavendas.exceptions.EventAtSameTimeRuntimeException;
+import com.ls.sistemavendas.exceptions.EventRepeatedRuntimeException;
 import com.ls.sistemavendas.repository.EventAgentRepository;
 import com.ls.sistemavendas.repository.EventRepository;
 import com.ls.sistemavendas.repository.StandAgentRepository;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -37,6 +39,78 @@ public class FormService implements IFormService {
     @Transactional
     public ResponseEntity<FormDetailsDto> register(@Valid FormRegisterDto formRegisterDto) {
 
+        if (eventRepository.existsByPeriod(formRegisterDto.getEvent().getFirstOccurrenceDateTime(),
+                formRegisterDto.getEvent().getDuration())){
+            throw new EventAtSameTimeRuntimeException("{\n  firstOccurrenceDateTime: Use outro período." +
+                    "Porque já existe outro evento ocorrendo nesse período.\n}");
+        }
+
+        if (eventRepository.existsByName(formRegisterDto.getEvent().getEventName())){
+
+            throw new EventRepeatedRuntimeException("{\n  eventName: Escolha outro nome para o evento! " +
+                    "Porque este nome já foi usado.\n}");
+
+            /*ConstraintViolation<FormDetailsDto> violation = new ConstraintViolation<FormDetailsDto>() {
+                @Override
+                public String getMessage() {
+                    return "Escolha outro nome para o evento! Porque este nome já foi usado.";
+                }
+
+                @Override
+                public String getMessageTemplate() {
+                    return null;
+                }
+
+                @Override
+                public FormDetailsDto getRootBean() {
+                    return null;
+                }
+
+                @Override
+                public Class<FormDetailsDto> getRootBeanClass() {
+                    return null;
+                }
+
+                @Override
+                public Object getLeafBean() {
+                    return null;
+                }
+
+                @Override
+                public Object[] getExecutableParameters() {
+                    return new Object[0];
+                }
+
+                @Override
+                public Object getExecutableReturnValue() {
+                    return null;
+                }
+
+                @Override
+                public Path getPropertyPath() {
+                    return null;
+                }
+
+                @Override
+                public Object getInvalidValue() {
+                    return null;
+                }
+
+                @Override
+                public ConstraintDescriptor<?> getConstraintDescriptor() {
+                    return null;
+                }
+
+                @Override
+                public <U> U unwrap(Class<U> type) {
+                    return null;
+                }
+            };
+            Set<ConstraintViolation<FormDetailsDto>> violations = new HashSet<>();
+            violations.add(violation);
+            throw new ConstraintViolationException(
+                    new HashSet<ConstraintViolation<FormDetailsDto>>(violations));*/
+        }
         EventEntity eventEntity = formRegisterDtoToEventEntity(formRegisterDto);
         eventEntity = eventRepository.save(eventEntity);
         FormDetailsDto formDetailsDto = eventEntityToFormDetailsDto(eventEntity);

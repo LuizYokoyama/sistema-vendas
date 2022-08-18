@@ -1,8 +1,6 @@
 package com.ls.sistemavendas.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ls.sistemavendas.annotations.EventRepeatedConstraint;
-import com.ls.sistemavendas.annotations.EventSameTimeConstraint;
 import lombok.*;
 
 import javax.validation.constraints.*;
@@ -22,7 +20,7 @@ public class EventDto {
     public static final int TOTAL_AGENT_MIN_VALUE = 1;
     public static final int TOTAL_AGENT_MAX_VALUE = 1000;
     public static final int DURATION_MIN_VALUE = 1;
-    public static final int DURATION_MAX_VALUE = 1000;
+    public static final int DURATION_MAX_VALUE = 24;
 
     @EqualsAndHashCode.Include
     @JsonIgnore
@@ -30,7 +28,6 @@ public class EventDto {
 
     @NotBlank(message = "Forneça o nome do evento!")
     @Size(max = NAME_MAX_SIZE)
-    @EventRepeatedConstraint
     private String eventName;
 
     @Size(max = PHOTO_MAX_SIZE, message = "Utilize uma imagem de tamanho menor!")
@@ -45,11 +42,14 @@ public class EventDto {
     private int totalAgents;
 
     @FutureOrPresent(message = "Forneça uma data futura para o evento!")
-    @EventSameTimeConstraint
     private LocalDateTime firstOccurrenceDateTime;
 
     @Min(value = DURATION_MIN_VALUE, message = "Forneça uma duração maior!")
     @Max(value = DURATION_MAX_VALUE, message = "Forneça uma duração menor!")
-    private float duration;
+    private int duration;
 
+    @AssertTrue(message = "erro")
+    public boolean isTrue(){
+        return true;
+    }
 }

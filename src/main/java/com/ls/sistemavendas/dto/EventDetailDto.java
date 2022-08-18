@@ -19,7 +19,7 @@ public class EventDetailDto {
     public static final int TOTAL_AGENT_MIN_VALUE = 1;
     public static final int TOTAL_AGENT_MAX_VALUE = 1000;
     public static final int DURATION_MIN_VALUE = 1;
-    public static final int DURATION_MAX_VALUE = 1000;
+    public static final int DURATION_MAX_VALUE = 24;
 
     @EqualsAndHashCode.Include
     private UUID id;
@@ -44,6 +44,6 @@ public class EventDetailDto {
 
     @Min(value = DURATION_MIN_VALUE, message = "Forneça uma duração maior!")
     @Max(value = DURATION_MAX_VALUE, message = "Forneça uma duração menor!")
-    private float duration;
+    private int duration;
 
 }

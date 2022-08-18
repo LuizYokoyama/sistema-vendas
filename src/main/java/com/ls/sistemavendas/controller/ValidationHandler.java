@@ -1,5 +1,7 @@
 package com.ls.sistemavendas.controller;
 
+import com.ls.sistemavendas.exceptions.EventAtSameTimeRuntimeException;
+import com.ls.sistemavendas.exceptions.EventRepeatedRuntimeException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,7 +14,7 @@ import java.util.Map;
 @ControllerAdvice
 public class ValidationHandler extends ResponseEntityExceptionHandler {
 
-     @ExceptionHandler(value = {ConstraintViolationException.class})
+    @ExceptionHandler(value = {ConstraintViolationException.class})
     protected ResponseEntity<Object> handleConflict(
             ConstraintViolationException ex ) {
         Map<String, String> constraintViolations = new HashMap<>();
@@ -25,6 +27,16 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(constraintViolations);
     }
 
+    @ExceptionHandler(value = {EventRepeatedRuntimeException.class})
+    protected ResponseEntity<Object> handleEventRepeatedException(
+            EventRepeatedRuntimeException ex ) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 
+    @ExceptionHandler(value = {EventAtSameTimeRuntimeException.class})
+    protected ResponseEntity<Object> handleEventAtSameTimeException(
+            EventAtSameTimeRuntimeException ex ) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 
 }
