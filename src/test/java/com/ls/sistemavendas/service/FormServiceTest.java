@@ -34,8 +34,12 @@ public class FormServiceTest {
         final var json = Paths.get("src", "test", "resources", "input.json");
         final var formRegisterDto = new ObjectMapper().registerModule(new JavaTimeModule()).readValue(json.toFile(), FormRegisterDto.class);
 
+      //  FormService formService = new FormService(eventRepository);
+
         EventEntity eventEntity = formRegisterDtoToEventEntity(formRegisterDto);
         eventEntity = eventRepository.save(eventEntity);
+
+        //eventEntity = formService.register(formRegisterDto);
 
         if (eventRepository.existsByPeriod(formRegisterDto.getEvent().getFirstOccurrenceDateTime(),
                 formRegisterDto.getEvent().getDuration())){

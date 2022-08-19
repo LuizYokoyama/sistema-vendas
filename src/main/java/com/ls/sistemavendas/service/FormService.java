@@ -26,6 +26,10 @@ public class FormService implements IFormService {
 
     final int SHORT_ID_LENGTH = 8;
 
+    public FormService(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
+    }
+
     @Autowired
     private EventRepository eventRepository;
 
@@ -49,67 +53,6 @@ public class FormService implements IFormService {
 
             throw new EventRepeatedRuntimeException("{\n  eventName: Escolha outro nome para o evento! " +
                     "Porque este nome já foi usado.\n}");
-
-            /*ConstraintViolation<FormDetailsDto> violation = new ConstraintViolation<FormDetailsDto>() {
-                @Override
-                public String getMessage() {
-                    return "Escolha outro nome para o evento! Porque este nome já foi usado.";
-                }
-
-                @Override
-                public String getMessageTemplate() {
-                    return null;
-                }
-
-                @Override
-                public FormDetailsDto getRootBean() {
-                    return null;
-                }
-
-                @Override
-                public Class<FormDetailsDto> getRootBeanClass() {
-                    return null;
-                }
-
-                @Override
-                public Object getLeafBean() {
-                    return null;
-                }
-
-                @Override
-                public Object[] getExecutableParameters() {
-                    return new Object[0];
-                }
-
-                @Override
-                public Object getExecutableReturnValue() {
-                    return null;
-                }
-
-                @Override
-                public Path getPropertyPath() {
-                    return null;
-                }
-
-                @Override
-                public Object getInvalidValue() {
-                    return null;
-                }
-
-                @Override
-                public ConstraintDescriptor<?> getConstraintDescriptor() {
-                    return null;
-                }
-
-                @Override
-                public <U> U unwrap(Class<U> type) {
-                    return null;
-                }
-            };
-            Set<ConstraintViolation<FormDetailsDto>> violations = new HashSet<>();
-            violations.add(violation);
-            throw new ConstraintViolationException(
-                    new HashSet<ConstraintViolation<FormDetailsDto>>(violations));*/
         }
         EventEntity eventEntity = formRegisterDtoToEventEntity(formRegisterDto);
         eventEntity = eventRepository.save(eventEntity);
