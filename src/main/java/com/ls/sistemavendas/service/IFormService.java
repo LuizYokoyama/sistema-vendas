@@ -3,6 +3,7 @@ package com.ls.sistemavendas.service;
 import com.ls.sistemavendas.Entity.EventEntity;
 import com.ls.sistemavendas.dto.FormDetailsDto;
 import com.ls.sistemavendas.dto.FormRegisterDto;
+import com.ls.sistemavendas.repository.EventRepository;
 import org.springframework.http.ResponseEntity;
 
 import javax.validation.Valid;
@@ -11,6 +12,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IFormService {
+
+    public void setEventRepository(EventRepository eventRepository);
 
     ResponseEntity<FormDetailsDto> register(@Valid FormRegisterDto formRegisterDto);
 

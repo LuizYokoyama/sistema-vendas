@@ -7,18 +7,18 @@
   },
   "event": {
     "description": "string",
-    "duration": 70,
+    "duration": 7,
     "eventName": "string",
     "firstOccurrenceDateTime": "2029-08-07T14:40:59.853Z",
     "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "photo": "string",
-    "totalAgents": 0
+    "totalAgents": 10
   },
   "standsList": [
     {
       "description": "string",
       "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      "index": 70,
+      "index": 9,
       "productsList": [
         {
           "description": "string",
@@ -26,7 +26,7 @@
           "price": 0
         }
       ],
-      "standTotalAgents": 70
+      "standTotalAgents": 3
     }
   ]
 }

@@ -16,9 +16,6 @@ public interface EventRepository extends JpaRepository<EventEntity, UUID> {
     @Query("SELECT new com.ls.sistemavendas.dto.HomeScreenEventDto(id, name, photo, description) FROM EventEntity ")
     public List<HomeScreenEventDto> getAllEventsShortList();
 
-    @Query("SELECT e.name FROM EventEntity e WHERE e.name = ?1")
-    public String getEventByName(String name);
-
     @Query(value =
             "SELECT CASE WHEN EXISTS" +
             "   (select e.first_occurrence_date_time, e.first_occurrence_date_time +  cast(concat(e.duration, ':00') as Time) from tb_event e" +

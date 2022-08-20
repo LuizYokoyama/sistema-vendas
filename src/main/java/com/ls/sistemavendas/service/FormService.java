@@ -26,18 +26,18 @@ public class FormService implements IFormService {
 
     final int SHORT_ID_LENGTH = 8;
 
-    public FormService(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
-    }
-
-    @Autowired
-    private EventRepository eventRepository;
-
     @Autowired
     private EventAgentRepository eventAgentRepository;
 
     @Autowired
     private StandAgentRepository standAgentRepository;
+
+    private EventRepository eventRepository;
+    @Autowired
+    @Override
+    public void setEventRepository(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
+    }
 
     @Override
     @Transactional
