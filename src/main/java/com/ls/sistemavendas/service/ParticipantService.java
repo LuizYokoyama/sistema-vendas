@@ -1,10 +1,10 @@
 package com.ls.sistemavendas.service;
 
 import com.ls.sistemavendas.Entity.ParticipantEntity;
+import com.ls.sistemavendas.dto.ParticipantDetailDto;
 import com.ls.sistemavendas.dto.ParticipantDto;
 import com.ls.sistemavendas.exceptions.ParticipantCodeAlreadyUsedRuntimeException;
 import com.ls.sistemavendas.repository.ParticipantRepository;
-import com.ls.sistemavendas.repository.TransactionItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Optional;
+
 @Service
 @Validated
 public class ParticipantService implements IParticipantService {
-
-    @Autowired
-    private TransactionItemRepository transactionItemRepository;
 
     @Autowired
     private ParticipantRepository participantRepository;
@@ -28,28 +27,39 @@ public class ParticipantService implements IParticipantService {
 
     @Override
     @Transactional
-    public ResponseEntity<ParticipantDto> newParticipant(ParticipantDto participantDto) {
+    public ResponseEntity<ParticipantDetailDto> newParticipant(ParticipantDto participantDto) {
 
         if (participantRepository.findById(participantDto.getParticipantCode()).isPresent()){
             throw new ParticipantCodeAlreadyUsedRuntimeException("Use outro código, porque este já foi usado.");
         }
         ParticipantEntity participantEntity = participantDtoToEntity(participantDto);
         participantEntity = participantRepository.save(participantEntity);
-        participantDto = participantEntityToDto(participantEntity);
+        ParticipantDetailDto participantDetailDto = participantEntityToParticipantDetailDto(participantEntity);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(participantDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(participantDetailDto);
     }
 
     @Override
-    public ParticipantDto participantEntityToDto(ParticipantEntity participantEntity) {
+    public Optional<ParticipantEntity> findByCode(String code) {
+        return participantRepository.findById(code);
+    }
 
-        ParticipantDto participantDto = new ParticipantDto();
+    @Override
+    public ResponseEntity<ParticipantDetailDto> getParticipantReleased(String code) {
+        return null;
+    }
 
-        participantDto.setParticipantCode(participantEntity.getCode());
-        participantDto.setName(participantEntity.getName());
-        participantDto.setPassword(participantEntity.getPassword());
+    @Override
+    public ParticipantDetailDto participantEntityToParticipantDetailDto(ParticipantEntity participantEntity) {
 
-        return participantDto;
+        ParticipantDetailDto participantDetailDto = new ParticipantDetailDto();
+
+        participantDetailDto.setParticipantCode(participantEntity.getCode());
+        participantDetailDto.setName(participantEntity.getName());
+        participantDetailDto.setPassword(participantEntity.getPassword());
+        participantDetailDto.setEntryDateTime(participantEntity.getEntryDateTime());
+
+        return participantDetailDto;
 
     }
 

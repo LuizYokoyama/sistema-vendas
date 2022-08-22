@@ -1,5 +1,6 @@
 package com.ls.sistemavendas.controller;
 
+import com.ls.sistemavendas.dto.ParticipantDetailDto;
 import com.ls.sistemavendas.dto.ParticipantDto;
 import com.ls.sistemavendas.service.IParticipantService;
 import io.swagger.annotations.Api;
@@ -21,7 +22,16 @@ public class ParticipantController {
     @PostMapping("/participant")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Add a new participant.")
-    public ResponseEntity<ParticipantDto> sell(@RequestBody ParticipantDto participantDto){
+    public ResponseEntity<ParticipantDetailDto> sell(@RequestBody ParticipantDto participantDto){
         return participantService.newParticipant(participantDto);
     }
+
+    @GetMapping("participant-release/{code}")
+    public ResponseEntity<ParticipantDetailDto> release(@PathVariable(value = "code") String code ){
+        if (!participantService.findByCode(code).isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return participantService.getParticipantReleased(code);
+    }
+
 }

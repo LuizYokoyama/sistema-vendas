@@ -3,6 +3,7 @@ package com.ls.sistemavendas.Entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -24,6 +25,10 @@ public class ParticipantEntity {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(name="timestamp", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+            insertable=false, updatable=false, nullable = false)
+    private Timestamp entryDateTime;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "participant_id")
