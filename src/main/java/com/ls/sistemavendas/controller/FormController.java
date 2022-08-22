@@ -53,8 +53,7 @@ public class FormController {
     @ApiOperation(value = "Get details of the event form")
     public ResponseEntity<FormDetailsDto> getEvent(@PathVariable(value = "id") UUID id){
 
-        Optional<EventEntity> eventEntityOptional = formService.findById(id);
-        if (!eventEntityOptional.isPresent()){
+        if (!formService.findById(id).isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         return formService.getEvent(id);

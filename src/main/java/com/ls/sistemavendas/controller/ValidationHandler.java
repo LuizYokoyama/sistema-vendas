@@ -1,6 +1,8 @@
 package com.ls.sistemavendas.controller;
 
+import com.ls.sistemavendas.exceptions.BadCredentialsRuntimeException;
 import com.ls.sistemavendas.exceptions.EventAtSameTimeRuntimeException;
+import com.ls.sistemavendas.exceptions.ParticipantCodeAlreadyUsedRuntimeException;
 import com.ls.sistemavendas.exceptions.EventRepeatedRuntimeException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -39,4 +41,15 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
+    @ExceptionHandler(value = {BadCredentialsRuntimeException.class})
+    protected ResponseEntity<Object> handleBadCredentialsException(
+            BadCredentialsRuntimeException ex ) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(value = {ParticipantCodeAlreadyUsedRuntimeException.class})
+    protected ResponseEntity<Object> handleParticipantCodeAlreadyUsedException(
+            ParticipantCodeAlreadyUsedRuntimeException ex ) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 }

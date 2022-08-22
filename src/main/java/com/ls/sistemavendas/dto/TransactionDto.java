@@ -15,6 +15,10 @@ public class TransactionDto {
     @EqualsAndHashCode.Include
     private String participantCode;
 
+    private String password;
+
+    private double totalTransaction;
+
     @Valid
     private List<TransactionItemDto> items;
 }
