@@ -28,6 +28,8 @@ public class StandEntity {
 
     private int totalAgents;
 
+    private double totalTransactions;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "stand_id")
     private Set<ProductEntity> productsList;

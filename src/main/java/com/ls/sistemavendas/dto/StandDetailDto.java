@@ -36,6 +36,9 @@ public class StandDetailDto {
     @Max(value = STAND_TOTAL_AGENT_MAX_VALUE, message = "Insira no máximo " + STAND_TOTAL_AGENT_MAX_VALUE + " agentes!")
     private int standTotalAgents;
 
+    @PositiveOrZero(message = "Forneça um valor positivo!")
+    private double totalTransactions;
+
     @Valid
     private Set<ProductDetailDto> productsList;
 

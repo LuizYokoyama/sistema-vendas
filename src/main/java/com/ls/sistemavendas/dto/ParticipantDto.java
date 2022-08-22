@@ -21,11 +21,11 @@ public class ParticipantDto {
 
     @EqualsAndHashCode.Include
     @NotBlank(message = "Forneça o código do participante!")
-    @Size(max = CODE_MAX_SIZE)
+    @Size(max = CODE_MAX_SIZE, message = "Forneça um código de no máximo " + CODE_MAX_SIZE + " caracteres!")
     private String participantCode;
 
     @NotBlank(message = "Forneça o nome do participante!")
-    @Size(max = NAME_MAX_SIZE)
+    @Size(max = NAME_MAX_SIZE, message = "Forneça um nome de no máximo " + NAME_MAX_SIZE + " caracteres!")
     private String name;
 
     @NotBlank(message = "Informe um password!")

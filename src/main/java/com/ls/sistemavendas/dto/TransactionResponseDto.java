@@ -14,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class TransactionDto {
+public class TransactionResponseDto {
 
     public static final int CODE_MAX_SIZE = 20;
     public static final int PASSWORD_MAX_SIZE = 8;
@@ -35,4 +35,6 @@ public class TransactionDto {
 
     @Valid
     private List<TransactionItemDto> items;
+
+    private double standTotalTransactions;
 }

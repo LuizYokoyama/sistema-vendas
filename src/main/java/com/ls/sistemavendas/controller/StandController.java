@@ -2,6 +2,7 @@ package com.ls.sistemavendas.controller;
 
 import com.ls.sistemavendas.dto.StandDetailDto;
 import com.ls.sistemavendas.dto.TransactionDto;
+import com.ls.sistemavendas.dto.TransactionResponseDto;
 import com.ls.sistemavendas.service.IStandService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,7 +36,7 @@ public class StandController {
     @PostMapping("/sell")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Add new transactions items to the participant.")
-    public ResponseEntity<TransactionDto> sell(@RequestBody TransactionDto transactionDto){
+    public ResponseEntity<TransactionResponseDto> sell(@RequestBody TransactionDto transactionDto){
         return standService.newTransaction(transactionDto);
     }
 }

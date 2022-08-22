@@ -3,14 +3,13 @@ package com.ls.sistemavendas.service;
 import com.ls.sistemavendas.Entity.ProductEntity;
 import com.ls.sistemavendas.Entity.StandEntity;
 import com.ls.sistemavendas.Entity.TransactionItemEntity;
-import com.ls.sistemavendas.dto.ProductDetailDto;
-import com.ls.sistemavendas.dto.StandDetailDto;
-import com.ls.sistemavendas.dto.TransactionDto;
-import com.ls.sistemavendas.dto.TransactionItemDto;
+import com.ls.sistemavendas.dto.*;
 import com.ls.sistemavendas.exceptions.BadCredentialsRuntimeException;
+import com.ls.sistemavendas.exceptions.StandNotFoundRuntimeException;
 import com.ls.sistemavendas.repository.ParticipantRepository;
 import com.ls.sistemavendas.repository.StandRepository;
 import com.ls.sistemavendas.repository.TransactionItemRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +61,7 @@ public class StandService implements IStandService{
         standDetailDto.setDescription(standEntity.getDescription());
         standDetailDto.setId(standEntity.getId());
         standDetailDto.setIndex(standEntity.getIndex());
+        standDetailDto.setTotalTransactions(standEntity.getTotalTransactions());
         standDetailDto.setStandTotalAgents(standEntity.getTotalAgents());
 
         return ResponseEntity.ok(standDetailDto);
@@ -69,12 +69,21 @@ public class StandService implements IStandService{
 
     @Override
     @Transactional
-    public ResponseEntity<TransactionDto> newTransaction(@Valid TransactionDto transactionDto) {
+    public ResponseEntity<TransactionResponseDto> newTransaction(@Valid TransactionDto transactionDto) {
 
         if (!passwordEncoder.matches(transactionDto.getPassword(),
                 participantRepository.findById(transactionDto.getParticipantCode()).get().getPassword())){
             throw new BadCredentialsRuntimeException("Código do participante ou senha inválidos!");
         }
+
+        StandEntity standEntity = standRepository.findById(transactionDto.getStandId()).get();
+        if (standEntity == null){
+            throw new StandNotFoundRuntimeException("Verifique o standId, porque este standId não foi encontrado!");
+        }
+        standEntity.setTotalTransactions(standEntity.getTotalTransactions() + transactionDto.getTotalTransaction());
+        standEntity = standRepository.save(standEntity);
+
+
         for (TransactionItemDto transactionItemDto : transactionDto.getItems()){
             TransactionItemEntity transactionItemEntity = new TransactionItemEntity();
             transactionItemEntity.setParticipantCode(transactionDto.getParticipantCode());
@@ -86,6 +95,10 @@ public class StandService implements IStandService{
             transactionItemDto.setProductID(transactionItemEntity.getProduct());
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(transactionDto);
+        TransactionResponseDto transactionResponseDto= new TransactionResponseDto();
+        BeanUtils.copyProperties(transactionDto, transactionResponseDto);
+        transactionResponseDto.setStandTotalTransactions(standEntity.getTotalTransactions());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(transactionResponseDto);
     }
 }

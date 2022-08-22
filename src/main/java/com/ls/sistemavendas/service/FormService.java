@@ -131,6 +131,7 @@ public class FormService implements IFormService {
             standDto.setDescription(standEntity.getDescription());
             standDto.setId(standEntity.getId());
             standDto.setIndex(standEntity.getIndex());
+            standDto.setTotalTransactions(standEntity.getTotalTransactions());
             standDto.setStandTotalAgents(standEntity.getTotalAgents());
             Set<StandAgentDto> standAgentDtos = new HashSet<>();
             if (standEntity.getAgentsList() != null) {
@@ -216,6 +217,7 @@ public class FormService implements IFormService {
             standEntity.setIndex(standDto.getIndex());
             standEntity.setId(standDto.getId());
             standEntity.setEvent(eventEntity);
+            standEntity.setTotalTransactions(standDto.getTotalTransactions());
             standEntity.setDescription(standDto.getDescription());
             standEntity.setTotalAgents(standDto.getStandTotalAgents());
             Set<ProductEntity> productEntities = new HashSet<>();
