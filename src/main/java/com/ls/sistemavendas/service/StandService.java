@@ -75,11 +75,11 @@ public class StandService implements IStandService{
                 participantRepository.findById(transactionDto.getParticipantCode()).get().getPassword())){
             throw new BadCredentialsRuntimeException("Código do participante ou senha inválidos!");
         }
-
-        StandEntity standEntity = standRepository.findById(transactionDto.getStandId()).get();
-        if (standEntity == null){
+        Optional<StandEntity> standEntityOptional= standRepository.findById(transactionDto.getStandId());
+        if (!standEntityOptional.isPresent()){
             throw new StandNotFoundRuntimeException("Verifique o standId, porque este standId não foi encontrado!");
         }
+        StandEntity standEntity = standEntityOptional.get();
         standEntity.setTotalTransactions(standEntity.getTotalTransactions() + transactionDto.getTotalTransaction());
         standEntity = standRepository.save(standEntity);
 

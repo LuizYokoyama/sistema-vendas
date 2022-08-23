@@ -48,8 +48,4 @@ public class EventDto {
     @Max(value = DURATION_MAX_VALUE, message = "Forneça uma duração menor!")
     private int duration;
 
-    @AssertTrue(message = "erro")
-    public boolean isTrue(){
-        return true;
-    }
 }

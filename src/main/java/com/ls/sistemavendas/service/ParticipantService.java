@@ -1,8 +1,7 @@
 package com.ls.sistemavendas.service;
 
 import com.ls.sistemavendas.Entity.ParticipantEntity;
-import com.ls.sistemavendas.dto.ParticipantDetailDto;
-import com.ls.sistemavendas.dto.ParticipantDto;
+import com.ls.sistemavendas.dto.*;
 import com.ls.sistemavendas.exceptions.ParticipantCodeAlreadyUsedRuntimeException;
 import com.ls.sistemavendas.repository.ParticipantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -45,8 +45,23 @@ public class ParticipantService implements IParticipantService {
     }
 
     @Override
-    public ResponseEntity<ParticipantDetailDto> getParticipantReleased(String code) {
+    public ResponseEntity<ParticipantSummaryDto> getParticipantReleased(String code) {
         return null;
+    }
+
+    @Override
+    public ResponseEntity<CashierDto> getParticipantCashier(String code) {
+
+        ParticipantSummaryDto participantSummaryDto = participantRepository.getParticipantSummaryById(code);
+        List<PurchasedProductsDto> purchasedProductsDtoList = participantRepository.getPurchasedProducts(code);
+        double accountTotal = 0;
+        for (PurchasedProductsDto purchasedProductsDto: purchasedProductsDtoList){
+            accountTotal += purchasedProductsDto.getPrice() * purchasedProductsDto.getQuantity();
+        }
+
+        CashierDto cashierDto = new CashierDto(participantSummaryDto, purchasedProductsDtoList, accountTotal);
+
+        return ResponseEntity.ok(cashierDto);
     }
 
     @Override
