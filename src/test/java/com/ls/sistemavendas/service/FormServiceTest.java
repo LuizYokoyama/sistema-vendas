@@ -14,8 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -31,7 +29,6 @@ public class FormServiceTest {
     @Mock
     private EventRepository eventRepository;
 
-    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Autowired
     @InjectMocks
@@ -53,13 +50,15 @@ public class FormServiceTest {
 
     @Test
     void givenFormRegisterToAddReturnAddedFormDetails(){
-        when(eventRepository.save(any())).thenReturn(formService.formRegisterDtoToEventEntity(formRegisterDto));
+
+        var eventEntity = formService.formRegisterDtoToEventEntity(formRegisterDto);
+
+        when(eventRepository.save(any())).thenReturn(eventEntity);
         //when(eventRepository.existsByName(any())).thenReturn(true);
         //when(eventRepository.existsByPeriod(any(), anyInt())).thenReturn(true);
         var formRegisterDetailsDto = formService.register(formRegisterDto);
-        var eventEntity = eventRepository.save(formService.formRegisterDtoToEventEntity(formRegisterDto));
 
-        verify(eventRepository, times(2)).save(any());
+        verify(eventRepository, times(1)).save(any());
         verify(eventRepository, times(1)).existsByName(any());
         verify(eventRepository, times(1)).existsByPeriod(any(), anyInt());
         assertEquals(formRegisterDetailsDto.getBody(), formService.eventEntityToFormDetailsDto(eventEntity));
