@@ -1,8 +1,12 @@
 package com.ls.sistemavendas.dto;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 
 @NoArgsConstructor
@@ -16,11 +20,12 @@ public class ParticipantSummaryDto {
 
     private String name;
 
-    private Timestamp timestamp;
+    private LocalDateTime timestamp;
 
     public ParticipantSummaryDto(String participantCode, String name, Object timestamp) {
+        Timestamp timeStamp = (Timestamp) timestamp;
         this.participantCode = participantCode;
         this.name = name;
-        this.timestamp = (Timestamp) timestamp;
+        this.timestamp = timeStamp.toLocalDateTime();
     }
 }

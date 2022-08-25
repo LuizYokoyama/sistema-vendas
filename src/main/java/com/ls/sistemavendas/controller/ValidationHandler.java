@@ -55,4 +55,10 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
             StandNotFoundRuntimeException ex ) {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
+
+    @ExceptionHandler(value = {ParticipantCodeNotFoundRuntimeException.class})
+    protected ResponseEntity<Object> handleParticipantCodeNotFoundException(
+            ParticipantCodeNotFoundRuntimeException ex ) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 }

@@ -14,7 +14,8 @@ import java.util.UUID;
 public interface EventRepository extends JpaRepository<EventEntity, UUID> {
 
     @Query("SELECT new com.ls.sistemavendas.dto.HomeScreenEventDto(id, name, photo, description) FROM EventEntity ")
-    public List<HomeScreenEventDto> getAllEventsShortList();
+    List<HomeScreenEventDto> getAllEventsShortList();
+
 
     @Query(value =
             "SELECT CASE WHEN EXISTS" +
@@ -26,8 +27,8 @@ public interface EventRepository extends JpaRepository<EventEntity, UUID> {
             "THEN CAST(1 AS Boolean)" +
             "ELSE CAST(0 AS boolean) END",
             nativeQuery = true)
-    public boolean existsByPeriod(LocalDateTime dateTime, int duration);
+    boolean existsByPeriod(LocalDateTime dateTime, int duration);
 
-    public Boolean existsByName(String name);
+    boolean existsByName(String name);
 
 }

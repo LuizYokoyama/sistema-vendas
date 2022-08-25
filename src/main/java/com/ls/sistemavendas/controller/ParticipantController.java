@@ -1,9 +1,6 @@
 package com.ls.sistemavendas.controller;
 
-import com.ls.sistemavendas.dto.CashierDto;
-import com.ls.sistemavendas.dto.ParticipantDetailDto;
-import com.ls.sistemavendas.dto.ParticipantDto;
-import com.ls.sistemavendas.dto.ParticipantSummaryDto;
+import com.ls.sistemavendas.dto.*;
 import com.ls.sistemavendas.service.IParticipantService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,13 +21,19 @@ public class ParticipantController {
     @PostMapping("/participant")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Add a new participant.")
-    public ResponseEntity<ParticipantDetailDto> sell(@RequestBody ParticipantDto participantDto){
+    public ResponseEntity<ParticipantDetailDto> create(@RequestBody ParticipantDto participantDto){
         return participantService.newParticipant(participantDto);
     }
 
+    @PostMapping("/payment")
+    @ApiOperation(value = "Add a participant's payment to the payments list.")
+    public ResponseEntity<PaymentDetailDto> addPayment(@RequestBody PaymentDto paymentDto){
+        return participantService.newPayment(paymentDto);
+    }
+
     @GetMapping("participant-release/{code}")
-    @ApiOperation(value = "Get the participant at released list.")
-    public ResponseEntity<ParticipantSummaryDto> release(@PathVariable(value = "code") String code ){
+    @ApiOperation(value = "Get the participant at the payments list.")
+    public ResponseEntity<PaymentDetailDto> release(@PathVariable(value = "code") String code ){
         if (!participantService.findByCode(code).isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

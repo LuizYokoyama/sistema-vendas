@@ -1,8 +1,12 @@
 package com.ls.sistemavendas.dto;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -18,12 +22,13 @@ public class PurchasedProductsDto {
     private int quantity;
 
     @EqualsAndHashCode.Include
-    private Timestamp timestamp;
+    private LocalDateTime timestamp;
 
     public PurchasedProductsDto(String description, double price, int quantity, Object timestamp) {
+        Timestamp timeStamp = (Timestamp) timestamp;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
-        this.timestamp = (Timestamp) timestamp;
+        this.timestamp = timeStamp.toLocalDateTime();
     }
 }

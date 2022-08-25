@@ -16,7 +16,7 @@ import java.util.Set;
 public class ParticipantDto {
 
     public static final int NAME_MAX_SIZE = 40;
-    public static final int CODE_MAX_SIZE = 20;
+    public static final int CODE_MAX_SIZE = 10;
     public static final int PASSWORD_MAX_SIZE = 8;
 
     @EqualsAndHashCode.Include
