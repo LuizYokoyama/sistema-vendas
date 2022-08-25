@@ -54,7 +54,7 @@ public class ParticipantService implements IParticipantService {
     }
 
     @Override
-    public ResponseEntity<PaymentDetailDto> getParticipantReleased(String code) {
+    public ResponseEntity<ParticipantReleasedDto> getParticipantReleased(String code) {
 
         if (!participantRepository.findById(code).isPresent()){
             throw new ParticipantCodeNotFoundRuntimeException("Confira o código do participante," +
@@ -66,13 +66,26 @@ public class ParticipantService implements IParticipantService {
             throw new ParticipantCodeNotFoundRuntimeException("Não constam pagamentos para o código de participante!");
         }
         PaymentDetailDto paymentDetailDto = paymentEntityToPaymentDetailDto(paymentEntity);
+        CashierDto cashierDto = calculateParticipantCashier(code);
+        ParticipantReleasedDto participantReleasedDto = new ParticipantReleasedDto(cashierDto, paymentDetailDto);
 
-        return ResponseEntity.ok(paymentDetailDto);
+        return ResponseEntity.ok(participantReleasedDto);
     }
 
     @Override
     public ResponseEntity<CashierDto> getParticipantCashier(String code) {
 
+        if (!participantRepository.findById(code).isPresent()){
+            throw new ParticipantCodeNotFoundRuntimeException("Confira se o código do participante está correto," +
+                    " porque este código informado não está cadastrado no sistema.");
+        }
+
+        CashierDto cashierDto = calculateParticipantCashier(code);
+
+        return ResponseEntity.ok(cashierDto);
+    }
+
+    private CashierDto calculateParticipantCashier(String code){
         ParticipantSummaryDto participantSummaryDto = participantRepository.getParticipantSummaryById(code);
         List<PurchasedProductsDto> purchasedProductsDtoList = participantRepository.getPurchasedProducts(code);
         double accountTotal = 0;
@@ -82,7 +95,7 @@ public class ParticipantService implements IParticipantService {
 
         CashierDto cashierDto = new CashierDto(participantSummaryDto, purchasedProductsDtoList, accountTotal);
 
-        return ResponseEntity.ok(cashierDto);
+        return cashierDto;
     }
 
     @Override

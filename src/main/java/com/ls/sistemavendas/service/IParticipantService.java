@@ -14,7 +14,7 @@ public interface IParticipantService {
 
     Optional<ParticipantEntity> findByCode(String code);
 
-    ResponseEntity<PaymentDetailDto> getParticipantReleased(String code);
+    ResponseEntity<ParticipantReleasedDto> getParticipantReleased(String code);
 
     ResponseEntity<CashierDto> getParticipantCashier(String code);
 

@@ -33,7 +33,7 @@ public class ParticipantController {
 
     @GetMapping("participant-release/{code}")
     @ApiOperation(value = "Get the participant at the payments list.")
-    public ResponseEntity<PaymentDetailDto> release(@PathVariable(value = "code") String code ){
+    public ResponseEntity<ParticipantReleasedDto> release(@PathVariable(value = "code") String code ){
         if (!participantService.findByCode(code).isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
