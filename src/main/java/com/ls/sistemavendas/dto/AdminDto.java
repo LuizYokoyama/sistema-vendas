@@ -29,7 +29,7 @@ public class AdminDto {
     private String login;
 
     @NotBlank(message = "Informe um password!")
-    @Size(max = PASSWORD_MAX_SIZE, message = "Informe um password de até " + PASSWORD_MAX_SIZE + "caracteres!")
+    @Size(max = PASSWORD_MAX_SIZE, message = "Informe um password de até " + PASSWORD_MAX_SIZE + " caracteres!")
     private String password;
 
     @Size(max = AVATAR_MAX_SIZE, message = "Utilize uma imagem de tamanho menor!")

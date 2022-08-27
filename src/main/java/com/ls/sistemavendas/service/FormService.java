@@ -12,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -33,6 +34,10 @@ public class FormService implements IFormService {
     private StandAgentRepository standAgentRepository;
 
     private EventRepository eventRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
     @Override
     public void setEventRepository(EventRepository eventRepository) {
@@ -195,7 +200,7 @@ public class FormService implements IFormService {
         eventEntity.setAdminName(formRegisterDto.getAdmin().getName());
         eventEntity.setAvatar(formRegisterDto.getAdmin().getAvatar());
         eventEntity.setLogin(formRegisterDto.getAdmin().getLogin());
-        eventEntity.setPassword(formRegisterDto.getAdmin().getPassword());
+        eventEntity.setPassword(passwordEncoder.encode(formRegisterDto.getAdmin().getPassword()));
         eventEntity.setPhoto(formRegisterDto.getEvent().getPhoto());
         eventEntity.setDuration(formRegisterDto.getEvent().getDuration());
         eventEntity.setDescription(formRegisterDto.getEvent().getDescription());
@@ -250,7 +255,7 @@ public class FormService implements IFormService {
         eventEntity.setAdminName(formDetailsDto.getAdmin().getName());
         eventEntity.setAvatar(formDetailsDto.getAdmin().getAvatar());
         eventEntity.setLogin(formDetailsDto.getAdmin().getLogin());
-        eventEntity.setPassword(formDetailsDto.getAdmin().getPassword());
+        eventEntity.setPassword(passwordEncoder.encode(formDetailsDto.getAdmin().getPassword()));
         eventEntity.setPhoto(formDetailsDto.getEvent().getPhoto());
         eventEntity.setDuration(formDetailsDto.getEvent().getDuration());
         eventEntity.setDescription(formDetailsDto.getEvent().getDescription());
