@@ -1,20 +1,21 @@
 package com.ls.sistemavendas.config;
 
+import com.ls.sistemavendas.service.FormService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 @Configuration
-public class SecurityConfiguration {
+@Order(1)
+public class EventSecurityConfiguration {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -22,7 +23,20 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public UserDetailsService formDetailsService() {
+        return new FormService();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider eventAuthenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(formDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder());
+
+        return authProvider;
+    }
+    @Bean
+    public SecurityFilterChain filterChainEvent(HttpSecurity http) throws Exception {
        /* http
                 .authorizeHttpRequests((authz) -> authz
                         .anyRequest().authenticated()
@@ -30,19 +44,30 @@ public class SecurityConfiguration {
                 .httpBasic(withDefaults());
 
         */
+        //http.authenticationProvider(eventAuthenticationProvider());
         http
                 .httpBasic()
                 .and()
+                .authenticationProvider(eventAuthenticationProvider())
                 .authorizeRequests()
-                .mvcMatchers(HttpMethod.GET,"/**" ).hasAnyRole("USER")
-                .mvcMatchers(HttpMethod.POST,"/**" ).hasAnyRole("USER")
+                .mvcMatchers(HttpMethod.POST,"/api/event" ).permitAll()
+                .mvcMatchers(HttpMethod.GET,"/**" ).authenticated()
+                .mvcMatchers(HttpMethod.POST,"/**" ).authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .csrf().disable();
+               /* .csrf().requireCsrfProtectionMatcher( //Enable Swagger use, but enable csrf in the GETs too
+                        new NegatedRequestMatcher(new OrRequestMatcher(
+                                new RequestHeaderRequestMatcher("Referer", "http://localhost:8080/swagger-ui/index.html"),
+                                new AntPathRequestMatcher("/login"), // GET only path
+                                new AntPathRequestMatcher("/index.html")
+                        ))
+                );*/
 
         return http.build();
     }
 
+    /*   //In-Memory Authentication
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
         UserDetails user = User.withUsername("user")
@@ -51,6 +76,8 @@ public class SecurityConfiguration {
                 .build();
         return new InMemoryUserDetailsManager(user);
     }
+*/
+
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -60,12 +87,6 @@ public class SecurityConfiguration {
                 .ignoring().mvcMatchers("/swagger-ui/**", "/configuration/**",
                         "/swagger-resources/**", "/v2/api-docs");
     }
-
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
-    }
-
 
 
 }

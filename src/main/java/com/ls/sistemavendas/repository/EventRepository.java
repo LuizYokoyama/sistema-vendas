@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository("eventRepository")
@@ -30,5 +31,7 @@ public interface EventRepository extends JpaRepository<EventEntity, UUID> {
     boolean existsByPeriod(LocalDateTime dateTime, int duration);
 
     boolean existsByName(String name);
+
+    Optional<EventEntity> findByLogin(String login);
 
 }

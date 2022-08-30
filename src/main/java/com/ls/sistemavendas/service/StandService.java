@@ -1,18 +1,23 @@
 package com.ls.sistemavendas.service;
 
 import com.ls.sistemavendas.Entity.ProductEntity;
+import com.ls.sistemavendas.Entity.StandAgentEntity;
 import com.ls.sistemavendas.Entity.StandEntity;
 import com.ls.sistemavendas.Entity.TransactionItemEntity;
 import com.ls.sistemavendas.dto.*;
 import com.ls.sistemavendas.exceptions.BadCredentialsRuntimeException;
 import com.ls.sistemavendas.exceptions.StandNotFoundRuntimeException;
 import com.ls.sistemavendas.repository.ParticipantRepository;
+import com.ls.sistemavendas.repository.StandAgentRepository;
 import com.ls.sistemavendas.repository.StandRepository;
 import com.ls.sistemavendas.repository.TransactionItemRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,10 +31,13 @@ import java.util.UUID;
 
 @Service
 @Validated
-public class StandService implements IStandService{
+public class StandService implements UserDetailsService, IStandService{
 
     @Autowired
     private StandRepository standRepository;
+
+    @Autowired
+    private StandAgentRepository standAgentRepository;
 
     @Autowired
     private ParticipantRepository participantRepository;
@@ -100,5 +108,15 @@ public class StandService implements IStandService{
         transactionResponseDto.setStandTotalTransactions(standEntity.getTotalTransactions());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionResponseDto);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        StandAgentEntity standAgentEntity = standAgentRepository.findById(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Verifique o código do agente, porque "
+                        + username + " não foi encontrado!"));
+
+        return standAgentEntity;
     }
 }

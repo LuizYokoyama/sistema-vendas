@@ -12,6 +12,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +26,7 @@ import java.util.*;
 
 @Service
 @Validated
-public class FormService implements IFormService {
+public class FormService implements UserDetailsService, IFormService {
 
     final int SHORT_ID_LENGTH = 8;
 
@@ -308,4 +311,11 @@ public class FormService implements IFormService {
         return ResponseEntity.status(HttpStatus.CREATED).body(eventAgentDto.getId());
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        EventEntity eventEntity = eventRepository.findByLogin(username)
+                .orElseThrow( () -> new UsernameNotFoundException("Verifique o login, porque "
+                        + username + " não foi encontrado!"));
+        return eventEntity;
+    }
 }

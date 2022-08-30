@@ -33,7 +33,7 @@ public class ProductEntity {
     @JoinColumn(name = "stand_id")
     private StandEntity stand;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     @JsonIgnore
     private Set<TransactionItemEntity> transactionItemEntities;
