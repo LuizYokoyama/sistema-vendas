@@ -1,39 +1,111 @@
 package com.ls.sistemavendas.config;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.VendorExtension;
+import springfox.documentation.builders.*;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.spring.web.plugins.WebFluxRequestHandlerProvider;
 import springfox.documentation.spring.web.plugins.WebMvcRequestHandlerProvider;
+import springfox.documentation.swagger.web.SecurityConfiguration;
+import springfox.documentation.swagger.web.SecurityConfigurationBuilder;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 
 @Configuration
+@EnableSwagger2
 public class SwaggerConfig {
 
+    @Value("http://localhost:8180/auth")
+    private String AUTH_SERVER;
+
+    @Value("zbji9pCixGxl1NByrdJJG3zYqJPL4mmN")
+    private String CLIENT_SECRET;
+
+    @Value("quermese_admin")
+    private String CLIENT_ID;
+
+    @Value("quermesse")
+    private String REALM;
+
+    private static final String OAUTH_NAME = "spring_oauth";
+    private static final String ALLOWED_PATHS = "/api.*";
+    private static final String GROUP_NAME = "quermesse-api";
+
     @Bean
-    public Docket eventApi(){
+    public Docket taskApi() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .groupName(GROUP_NAME)
+                .useDefaultResponseMessages(true)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.ls.sistemavendas"))
-                .paths(regex("/api.*"))
+                .paths(regex(ALLOWED_PATHS))
                 .build()
+                .securitySchemes(Arrays.asList(securityScheme()))
+                .securityContexts(Arrays.asList(securityContext()))
                 .apiInfo(metaInfo());
     }
+
+
+    @Bean
+    public SecurityConfiguration security() {
+        return SecurityConfigurationBuilder.builder()
+                .realm(REALM)
+                .clientId(CLIENT_ID)
+                .clientSecret(CLIENT_SECRET)
+                .appName(GROUP_NAME)
+                .scopeSeparator(" ")
+                .build();
+    }
+
+    private SecurityScheme securityScheme() {
+        GrantType grantType =
+                new AuthorizationCodeGrantBuilder()
+                        .tokenEndpoint(new TokenEndpoint(AUTH_SERVER + "/realms/" + REALM + "/protocol/openid-connect/token", GROUP_NAME))
+                        .tokenRequestEndpoint(
+                                new TokenRequestEndpoint(AUTH_SERVER + "/realms/" + REALM + "/protocol/openid-connect/auth", CLIENT_ID, CLIENT_SECRET))
+                        .build();
+
+        SecurityScheme oauth =
+                new OAuthBuilder()
+                        .name(OAUTH_NAME)
+                        .grantTypes(Arrays.asList(grantType))
+                        .scopes(Arrays.asList(scopes()))
+                        .build();
+        return oauth;
+    }
+
+    private AuthorizationScope[] scopes() {
+        AuthorizationScope[] scopes = {
+                new AuthorizationScope("user", "for CRUD operations"),
+                new AuthorizationScope("read", "for read operations"),
+                new AuthorizationScope("write", "for write operations")
+        };
+        return scopes;
+    }
+
+    private SecurityContext securityContext() {
+        return SecurityContext.builder()
+                .securityReferences(Arrays.asList(new SecurityReference(OAUTH_NAME, scopes())))
+                .forPaths(PathSelectors.regex(ALLOWED_PATHS))
+                .build();
+    }
+
+
 
     private ApiInfo metaInfo(){
         ApiInfo apiInfo = new ApiInfo(
@@ -83,5 +155,10 @@ public class SwaggerConfig {
             }
         };
     }
+
+
+
+
+
 
 }

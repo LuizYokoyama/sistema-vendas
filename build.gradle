@@ -34,8 +34,16 @@ dependencies {
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.keycloak:keycloak-spring-boot-starter:19.0.1'
 
 }
+
+dependencyManagement {
+	dependencies {
+		dependency 'org.keycloak.bom:keycloak-adapter-bom:19.0.1'
+	}
+}
+
 
 tasks.named('test') {
 	test {

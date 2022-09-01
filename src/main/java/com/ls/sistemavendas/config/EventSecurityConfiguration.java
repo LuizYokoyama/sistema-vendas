@@ -6,12 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @Order(1)
@@ -35,6 +33,9 @@ public class EventSecurityConfiguration {
 
         return authProvider;
     }
+
+
+    /*
     @Bean
     public SecurityFilterChain filterChainEvent(HttpSecurity http) throws Exception {
        /* http
@@ -43,7 +44,7 @@ public class EventSecurityConfiguration {
                 )
                 .httpBasic(withDefaults());
 
-        */
+        *//*
         //http.authenticationProvider(eventAuthenticationProvider());
         http
                 .httpBasic()
@@ -63,10 +64,10 @@ public class EventSecurityConfiguration {
                                 new AntPathRequestMatcher("/index.html")
                         ))
                 );*/
-
+/*
         return http.build();
     }
-
+*/
     /*   //In-Memory Authentication
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
