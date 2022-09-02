@@ -1,6 +1,7 @@
 package com.ls.sistemavendas.config;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,13 +33,20 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @EnableSwagger2
 public class SwaggerConfig {
 
-    private static final String AUTH_SERVER = "http://localhost:8180/auth";
+    @Value("${keycloak.auth-server-url}")
+    private String AUTH_SERVER;
 
-    private static final String CLIENT_SECRET = "zbji9pCixGxl1NByrdJJG3zYqJPL4mmN";
+    @Value("${keycloak.credentials.secret}")
+    private String CLIENT_SECRET;
 
-    private static final String CLIENT_ID = "quermese_admin";
+    @Value("${keycloak.resource}")
+    private String CLIENT_ID;
 
-    private static final String REALM = "quermesse";
+    @Value("${keycloak.realm}")
+    private String REALM;
+
+
+
     private static final String OAUTH_NAME = "spring_oauth";
 
     private static final String TOKEN_NAME = "oauthtoken";
@@ -74,8 +82,7 @@ public class SwaggerConfig {
     private SecurityScheme securityScheme() {
         GrantType grantType =
                 new AuthorizationCodeGrantBuilder()
-                        .tokenEndpoint(
-                                new TokenEndpoint(AUTH_SERVER + "/realms/" + REALM + "/protocol/openid-connect/token", TOKEN_NAME))
+                        .tokenEndpoint(new TokenEndpoint(AUTH_SERVER + "/realms/" + REALM + "/protocol/openid-connect/token", TOKEN_NAME))
                         .tokenRequestEndpoint(
                                 new TokenRequestEndpoint(AUTH_SERVER + "/realms/" + REALM + "/protocol/openid-connect/auth", CLIENT_ID, CLIENT_SECRET))
                         .build();

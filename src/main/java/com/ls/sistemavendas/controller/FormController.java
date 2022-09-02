@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class FormController {
 
     @GetMapping("/events-full")
     @ApiOperation(value = "List of all events")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER')")
     public List<FormRegisterDto> listFull(){
         return formService.findAllFull();
     }
@@ -61,12 +63,14 @@ public class FormController {
 
     @PostMapping("/agent/new-stand-agent")
     @ApiOperation(value = "Get new stand agent hashcode id")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER')")
     public ResponseEntity<String> getNewStandAgent(){
         return formService.newStandAgent();
     }
 
     @PostMapping("/agent/new-event-agent")
     @ApiOperation(value = "Get new event agent hashcode id")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public  ResponseEntity<String> getNewEventAgent(){
         return formService.newEventAgent();
     }
