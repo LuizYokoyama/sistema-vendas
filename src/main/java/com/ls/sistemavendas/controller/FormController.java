@@ -20,6 +20,7 @@ import java.util.UUID;
 @RequestMapping("/api")
 @Api(value="Events Form API REST")
 @CrossOrigin(origins = "*")
+@PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
 public class FormController {
 
     @Autowired
@@ -27,17 +28,10 @@ public class FormController {
 
     @GetMapping("/events-full")
     @ApiOperation(value = "List of all events")
-    @PreAuthorize("hasAnyAuthority('ROLE_USER')")
     public List<FormRegisterDto> listFull(){
         return formService.findAllFull();
     }
 
-    @PostMapping("/event")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "Add a new event")
-    public ResponseEntity<FormDetailsDto> addEvent(@RequestBody FormRegisterDto formRegisterDto){
-        return formService.register(formRegisterDto);
-    }
 
     @PutMapping("/event/{id}")
     @ApiOperation(value = "Update details of the event form")
@@ -63,14 +57,12 @@ public class FormController {
 
     @PostMapping("/agent/new-stand-agent")
     @ApiOperation(value = "Get new stand agent hashcode id")
-    @PreAuthorize("hasAnyAuthority('ROLE_USER')")
     public ResponseEntity<String> getNewStandAgent(){
         return formService.newStandAgent();
     }
 
     @PostMapping("/agent/new-event-agent")
     @ApiOperation(value = "Get new event agent hashcode id")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public  ResponseEntity<String> getNewEventAgent(){
         return formService.newEventAgent();
     }

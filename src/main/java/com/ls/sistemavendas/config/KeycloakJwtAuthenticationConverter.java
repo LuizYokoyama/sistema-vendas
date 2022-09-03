@@ -49,7 +49,7 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
     private Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
         Set<String> rolesWithPrefix = new HashSet<>();
         rolesWithPrefix.addAll(getRealmRoles(jwt));
-        rolesWithPrefix.addAll(getResourceRoles(jwt));
+        //rolesWithPrefix.addAll(getResourceRoles(jwt));
         return AuthorityUtils.createAuthorityList(rolesWithPrefix.toArray(new String[0]));
     }
 

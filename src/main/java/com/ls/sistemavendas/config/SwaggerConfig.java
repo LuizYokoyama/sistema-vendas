@@ -51,7 +51,9 @@ public class SwaggerConfig {
 
     private static final String TOKEN_NAME = "oauthtoken";
     private static final String ALLOWED_PATHS = "/api.*";
-    private static final String GROUP_NAME = "grupo1";
+    private static final String GROUP_NAME = "quermesse";
+
+    private static final String APP_NAME = "QuermesseApplication";
 
     @Bean
     public Docket taskApi() {
@@ -74,7 +76,7 @@ public class SwaggerConfig {
                 .realm(REALM)
                 .clientId(CLIENT_ID)
                 .clientSecret(CLIENT_SECRET)
-                .appName(GROUP_NAME)
+                .appName(APP_NAME)
                 .scopeSeparator(" ")
                 .build();
     }
@@ -100,7 +102,8 @@ public class SwaggerConfig {
         AuthorizationScope[] scopes = {
                 new AuthorizationScope("user", "for CRUD operations"),
                 new AuthorizationScope("read", "for read operations"),
-                new AuthorizationScope("write", "for write operations")
+                new AuthorizationScope("write", "for write operations"),
+                new AuthorizationScope("ADMIN", "for admin operations")
         };
         return scopes;
     }

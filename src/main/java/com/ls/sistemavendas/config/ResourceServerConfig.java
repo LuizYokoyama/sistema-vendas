@@ -2,17 +2,18 @@ package com.ls.sistemavendas.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-public class ResourceServerConfig {
+public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 
     private final KeycloakJwtAuthenticationConverter keycloakJwtAuthenticationConverter;
 
@@ -21,16 +22,17 @@ public class ResourceServerConfig {
         return new BCryptPasswordEncoder(4);
     }
 
-    @Bean
-    public SecurityFilterChain filterChainEvent(HttpSecurity http) throws Exception {
-
+    @Override
+    public void configure(final HttpSecurity http) throws Exception {
         http
-                .authorizeRequests(authz -> authz.antMatchers("/api/**").authenticated())
+                .csrf().disable()
+                .authorizeRequests(authz -> authz
+                        .mvcMatchers(HttpMethod.POST,"/api/event" ).permitAll()
+                        .mvcMatchers(HttpMethod.GET,"/api/start-events" ).permitAll()
+                        .antMatchers("/api/**").authenticated()
+                )
                 .oauth2ResourceServer()
                 .jwt().jwtAuthenticationConverter(keycloakJwtAuthenticationConverter);
-
-        return http.build();
-
     }
 
 
