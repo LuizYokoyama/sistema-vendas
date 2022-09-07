@@ -1,10 +1,12 @@
 package com.ls.sistemavendas.controller;
 
+import com.ls.sistemavendas.dto.AdminDto;
 import com.ls.sistemavendas.dto.FormDetailsDto;
 import com.ls.sistemavendas.dto.FormRegisterDto;
 import com.ls.sistemavendas.dto.HomeScreenEventDto;
 import com.ls.sistemavendas.service.IFormService;
 import com.ls.sistemavendas.service.IHomeScreenService;
+import com.ls.sistemavendas.service.KeyCloakService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +20,16 @@ import java.util.List;
 @RequestMapping("/api")
 @Api(value="Home Events API REST")
 @CrossOrigin(origins = "*")
-public class HomeScreenController {
+public class OpenController {
 
     @Autowired
     IHomeScreenService homeScreenService;
 
     @Autowired
     IFormService formService;
+
+    @Autowired
+    KeyCloakService keyCloakService;
 
 
     @GetMapping("/start-events")
@@ -38,6 +43,14 @@ public class HomeScreenController {
     @ApiOperation(value = "Add a new event")
     public ResponseEntity<FormDetailsDto> addEvent(@RequestBody FormRegisterDto formRegisterDto){
         return formService.register(formRegisterDto);
+    }
+
+    @PostMapping("/user")
+    @ApiOperation(value = "Post new user (test)")
+    public ResponseEntity<String> addUser(@RequestBody AdminDto adminDto){
+
+        return keyCloakService.addUser(adminDto);
+
     }
 
 }

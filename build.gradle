@@ -37,6 +37,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	testImplementation 'org.springframework.security:spring-security-test'
 	implementation 'org.keycloak:keycloak-spring-boot-starter:19.0.1'
+	implementation 'org.keycloak:keycloak-admin-client:19.0.1'
+
 
 }
 

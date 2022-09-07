@@ -47,7 +47,7 @@ public class SwaggerConfig {
 
 
 
-    private static final String OAUTH_NAME = "spring_oauth";
+    private static final String OAUTH_NAME = "OAuth2";
 
     private static final String TOKEN_NAME = "oauthtoken";
     private static final String ALLOWED_PATHS = "/api.*";

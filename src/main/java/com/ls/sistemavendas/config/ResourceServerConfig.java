@@ -28,6 +28,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests(authz -> authz
                         .mvcMatchers(HttpMethod.POST,"/api/event" ).permitAll()
+                        .mvcMatchers(HttpMethod.POST,"/api/user" ).permitAll()
                         .mvcMatchers(HttpMethod.GET,"/api/start-events" ).permitAll()
                         .antMatchers("/api/**").authenticated()
                 )

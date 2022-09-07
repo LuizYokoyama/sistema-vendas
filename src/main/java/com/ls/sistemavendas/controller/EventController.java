@@ -21,7 +21,8 @@ import java.util.UUID;
 @Api(value="Events Form API REST")
 @CrossOrigin(origins = "*")
 @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-public class FormController {
+public class EventController {
+
 
     @Autowired
     IFormService formService;
@@ -54,6 +55,8 @@ public class FormController {
         }
         return formService.getEvent(id);
     }
+
+
 
     @PostMapping("/agent/new-stand-agent")
     @ApiOperation(value = "Get new stand agent hashcode id")
