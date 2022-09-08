@@ -61,20 +61,17 @@ public class OpenController {
         System.out.println("getId: "+keyCloakService.getUser(login).get(0).getId());
         System.out.println("getAccess: "+keyCloakService.getUser(login).get(0).getAccess());
         System.out.println("getClientConsents: "+keyCloakService.getUser(login).get(0).getClientConsents());
+        System.out.println("getRealmRoles: "+keyCloakService.getUser(login).get(0).getRealmRoles());
         System.out.println("getClientRoles: "+keyCloakService.getUser(login).get(0).getClientRoles());
         System.out.println("getCredentials: "+keyCloakService.getUser(login).get(0).getCredentials());
         System.out.println("getUsername: "+keyCloakService.getUser(login).get(0).getUsername());
         System.out.println("getFirstName: "+keyCloakService.getUser(login).get(0).getFirstName());
         System.out.println("getLastName: "+keyCloakService.getUser(login).get(0).getLastName());
         System.out.println("getGroups: "+keyCloakService.getUser(login).get(0).getGroups());
-
-
-
-
-
-
-
-
+        System.out.println("getEmail: "+keyCloakService.getUser(login).get(0).getEmail());
+        System.out.println("getCreatedTimestamp: "+keyCloakService.getUser(login).get(0).getCreatedTimestamp());
+        System.out.println("toAttributes: "+keyCloakService.getUser(login).get(0).toAttributes());
+        System.out.println("getFederatedIdentities: "+keyCloakService.getUser(login).get(0).getFederatedIdentities());
 
         return "Done";
 
