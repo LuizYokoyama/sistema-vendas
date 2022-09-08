@@ -53,4 +53,30 @@ public class OpenController {
 
     }
 
+    @GetMapping("/user/{login}")
+    @ApiOperation(value = "Get user (test)")
+    public String getUser(@PathVariable(value = "login") String login){
+
+        System.out.println("getAttributes: "+keyCloakService.getUser(login).get(0).getAttributes());
+        System.out.println("getId: "+keyCloakService.getUser(login).get(0).getId());
+        System.out.println("getAccess: "+keyCloakService.getUser(login).get(0).getAccess());
+        System.out.println("getClientConsents: "+keyCloakService.getUser(login).get(0).getClientConsents());
+        System.out.println("getClientRoles: "+keyCloakService.getUser(login).get(0).getClientRoles());
+        System.out.println("getCredentials: "+keyCloakService.getUser(login).get(0).getCredentials());
+        System.out.println("getUsername: "+keyCloakService.getUser(login).get(0).getUsername());
+        System.out.println("getFirstName: "+keyCloakService.getUser(login).get(0).getFirstName());
+        System.out.println("getLastName: "+keyCloakService.getUser(login).get(0).getLastName());
+        System.out.println("getGroups: "+keyCloakService.getUser(login).get(0).getGroups());
+
+
+
+
+
+
+
+
+
+        return "Done";
+
+    }
 }

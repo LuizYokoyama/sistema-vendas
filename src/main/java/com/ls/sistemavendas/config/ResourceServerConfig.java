@@ -29,6 +29,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests(authz -> authz
                         .mvcMatchers(HttpMethod.POST,"/api/event" ).permitAll()
                         .mvcMatchers(HttpMethod.POST,"/api/user" ).permitAll()
+                        .mvcMatchers(HttpMethod.GET,"/api/user/**" ).permitAll()
                         .mvcMatchers(HttpMethod.GET,"/api/start-events" ).permitAll()
                         .antMatchers("/api/**").authenticated()
                 )
