@@ -4,6 +4,7 @@ import com.ls.sistemavendas.Entity.*;
 import com.ls.sistemavendas.dto.*;
 import com.ls.sistemavendas.exceptions.EventAtSameTimeRuntimeException;
 import com.ls.sistemavendas.exceptions.EventRepeatedRuntimeException;
+import com.ls.sistemavendas.exceptions.UserNameAlreadyExistsRuntimeException;
 import com.ls.sistemavendas.repository.EventAgentRepository;
 import com.ls.sistemavendas.repository.EventRepository;
 import com.ls.sistemavendas.repository.StandAgentRepository;
@@ -42,6 +43,9 @@ public class FormService implements UserDetailsService, IFormService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    private KeyCloakService keyCloakService;
+
+    @Autowired
     @Override
     public void setEventRepository(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
@@ -62,6 +66,16 @@ public class FormService implements UserDetailsService, IFormService {
             throw new EventRepeatedRuntimeException("{\n  eventName: Escolha outro nome para o evento! " +
                     "Porque este nome já foi usado.\n}");
         }
+
+        ResponseEntity<String> keycloak =  keyCloakService.addUser(formRegisterDto.getAdmin());
+        if (keycloak.getStatusCode() != HttpStatus.CREATED){
+            if (keycloak.getStatusCode() == HttpStatus.CONFLICT){
+                throw new UserNameAlreadyExistsRuntimeException("Use outro login! Porque este já foi usado!");
+            }
+            throw new RuntimeException(keycloak.toString());
+
+        }
+
         EventEntity eventEntity = formRegisterDtoToEventEntity(formRegisterDto);
         eventEntity = eventRepository.save(eventEntity);
         FormDetailsDto formDetailsDto = eventEntityToFormDetailsDto(eventEntity);

@@ -1,6 +1,7 @@
 package com.ls.sistemavendas.controller;
 
 import com.ls.sistemavendas.exceptions.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,13 +30,13 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {EventRepeatedRuntimeException.class})
     protected ResponseEntity<Object> handleEventRepeatedException(
             EventRepeatedRuntimeException ex ) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
     @ExceptionHandler(value = {EventAtSameTimeRuntimeException.class})
     protected ResponseEntity<Object> handleEventAtSameTimeException(
             EventAtSameTimeRuntimeException ex ) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
     @ExceptionHandler(value = {BadCredentialsRuntimeException.class})
@@ -47,7 +48,7 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {ParticipantCodeAlreadyUsedRuntimeException.class})
     protected ResponseEntity<Object> handleParticipantCodeAlreadyUsedException(
             ParticipantCodeAlreadyUsedRuntimeException ex ) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
     @ExceptionHandler(value = {StandNotFoundRuntimeException.class})
@@ -61,4 +62,11 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
             ParticipantCodeNotFoundRuntimeException ex ) {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
+
+    @ExceptionHandler(value = {    UserNameAlreadyExistsRuntimeException.class})
+    protected ResponseEntity<Object> handleUserNameAlreadyExistsException(
+            UserNameAlreadyExistsRuntimeException ex ) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
 }
