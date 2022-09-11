@@ -69,4 +69,10 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
+    @ExceptionHandler(value = {    RuntimeException.class})
+    protected ResponseEntity<Object> handleRuntimeException(
+            RuntimeException ex ) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
+
 }

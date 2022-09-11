@@ -27,7 +27,7 @@ import java.util.*;
 
 @Service
 @Validated
-public class FormService implements UserDetailsService, IFormService {
+public class EventService implements UserDetailsService, IEventService {
 
     final int SHORT_ID_LENGTH = 8;
 
@@ -67,7 +67,7 @@ public class FormService implements UserDetailsService, IFormService {
                     "Porque este nome já foi usado.\n}");
         }
 
-        ResponseEntity<String> keycloak =  keyCloakService.addUser(formRegisterDto.getAdmin());
+        ResponseEntity<String> keycloak =  keyCloakService.addUserAdmin(formRegisterDto.getAdmin());
         if (keycloak.getStatusCode() != HttpStatus.CREATED){
             if (keycloak.getStatusCode() == HttpStatus.CONFLICT){
                 throw new UserNameAlreadyExistsRuntimeException("Use outro login! Porque este já foi usado!");
@@ -308,6 +308,12 @@ public class FormService implements UserDetailsService, IFormService {
         standAgentEntity.setId(RandomStringUtils.randomAlphanumeric(SHORT_ID_LENGTH));
         standAgentEntity = standAgentRepository.save(standAgentEntity);
 
+        ResponseEntity<String> userKC = keyCloakService.addUserStandAgent(standAgentEntity.getId());
+
+        if (userKC.getStatusCode() != HttpStatus.CREATED ){
+            throw new RuntimeException(userKC.toString());
+        }
+
         StandAgentDto standAgentDto = new StandAgentDto();
         BeanUtils.copyProperties(standAgentEntity, standAgentDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(standAgentDto.getId());
@@ -319,6 +325,12 @@ public class FormService implements UserDetailsService, IFormService {
         EventAgentEntity eventAgentEntity = new EventAgentEntity();
         eventAgentEntity.setId(RandomStringUtils.randomAlphanumeric(SHORT_ID_LENGTH));
         eventAgentEntity = eventAgentRepository.save(eventAgentEntity);
+
+        ResponseEntity<String> userKC = keyCloakService.addUserStandAgent(eventAgentEntity.getId());
+
+        if (userKC.getStatusCode() != HttpStatus.CREATED ){
+            throw new RuntimeException(userKC.toString());
+        }
 
         EventAgentDto eventAgentDto = new EventAgentDto();
         BeanUtils.copyProperties(eventAgentEntity, eventAgentDto);

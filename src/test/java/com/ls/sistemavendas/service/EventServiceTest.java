@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-public class FormServiceTest {
+public class EventServiceTest {
 
     @Mock
     private EventRepository eventRepository;
@@ -32,7 +32,7 @@ public class FormServiceTest {
 
     @Autowired
     @InjectMocks
-    private FormService formService;
+    private EventService formService;
 
     private FormRegisterDto formRegisterDto;
 

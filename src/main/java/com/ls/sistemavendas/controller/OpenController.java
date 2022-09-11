@@ -4,7 +4,7 @@ import com.ls.sistemavendas.dto.AdminDto;
 import com.ls.sistemavendas.dto.FormDetailsDto;
 import com.ls.sistemavendas.dto.FormRegisterDto;
 import com.ls.sistemavendas.dto.HomeScreenEventDto;
-import com.ls.sistemavendas.service.IFormService;
+import com.ls.sistemavendas.service.IEventService;
 import com.ls.sistemavendas.service.IHomeScreenService;
 import com.ls.sistemavendas.service.KeyCloakService;
 import io.swagger.annotations.Api;
@@ -26,7 +26,7 @@ public class OpenController {
     IHomeScreenService homeScreenService;
 
     @Autowired
-    IFormService formService;
+    IEventService formService;
 
     @Autowired
     KeyCloakService keyCloakService;
@@ -49,7 +49,7 @@ public class OpenController {
     @ApiOperation(value = "Post new user (test)")
     public ResponseEntity<String> addUser(@RequestBody AdminDto adminDto){
 
-        return keyCloakService.addUser(adminDto);
+        return keyCloakService.addUserAdmin(adminDto);
 
     }
 

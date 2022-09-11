@@ -3,7 +3,7 @@ package com.ls.sistemavendas.controller;
 import com.ls.sistemavendas.Entity.EventEntity;
 import com.ls.sistemavendas.dto.FormDetailsDto;
 import com.ls.sistemavendas.dto.FormRegisterDto;
-import com.ls.sistemavendas.service.IFormService;
+import com.ls.sistemavendas.service.IEventService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +25,12 @@ public class EventController {
 
 
     @Autowired
-    IFormService formService;
+    IEventService eventService;
 
     @GetMapping("/events-full")
     @ApiOperation(value = "List of all events")
     public List<FormRegisterDto> listFull(){
-        return formService.findAllFull();
+        return eventService.findAllFull();
     }
 
 
@@ -38,22 +38,22 @@ public class EventController {
     @ApiOperation(value = "Update details of the event form")
     public ResponseEntity<FormDetailsDto> updateEvent(@PathVariable(value = "id") UUID id, @RequestBody FormDetailsDto formDetailsDto){
 
-        Optional<EventEntity> eventEntityOptional = formService.findById(id);
+        Optional<EventEntity> eventEntityOptional = eventService.findById(id);
         if (!eventEntityOptional.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         formDetailsDto.getEvent().setId(id);
-        return formService.update(formDetailsDto);
+        return eventService.update(formDetailsDto);
     }
 
     @GetMapping("/event/{id}")
     @ApiOperation(value = "Get details of the event form")
     public ResponseEntity<FormDetailsDto> getEvent(@PathVariable(value = "id") UUID id){
 
-        if (!formService.findById(id).isPresent()){
+        if (!eventService.findById(id).isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        return formService.getEvent(id);
+        return eventService.getEvent(id);
     }
 
 
@@ -61,12 +61,12 @@ public class EventController {
     @PostMapping("/agent/new-stand-agent")
     @ApiOperation(value = "Get new stand agent hashcode id")
     public ResponseEntity<String> getNewStandAgent(){
-        return formService.newStandAgent();
+        return eventService.newStandAgent();
     }
 
     @PostMapping("/agent/new-event-agent")
     @ApiOperation(value = "Get new event agent hashcode id")
     public  ResponseEntity<String> getNewEventAgent(){
-        return formService.newEventAgent();
+        return eventService.newEventAgent();
     }
 }

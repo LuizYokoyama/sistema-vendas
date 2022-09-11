@@ -20,7 +20,7 @@ import java.util.List;
 public class KeyCloakService {
 
 
-    public ResponseEntity<String> addUser(AdminDto adminDto){
+    public ResponseEntity<String> addUserAdmin(AdminDto adminDto){
 
         CredentialRepresentation credential = Credentials
                 .createPasswordCredentials(adminDto.getPassword());
@@ -31,6 +31,39 @@ public class KeyCloakService {
         UserRepresentation user = new UserRepresentation();
         user.setUsername(adminDto.getLogin());
         user.setFirstName(adminDto.getName());
+        return createKeycloakUser(credential, groupsList, user);
+
+    }
+
+    public ResponseEntity<String> addUserEventAgent(String login){
+
+        CredentialRepresentation credential = Credentials
+                .createPasswordCredentials(login);
+
+        List<String> groupsList = new ArrayList<>();
+        groupsList.add("agent_event");
+
+        UserRepresentation user = new UserRepresentation();
+        user.setUsername(login);
+        return createKeycloakUser(credential, groupsList, user);
+
+    }
+
+    public ResponseEntity<String> addUserStandAgent(String login){
+
+        CredentialRepresentation credential = Credentials
+                .createPasswordCredentials(login);
+
+        List<String> groupsList = new ArrayList<>();
+        groupsList.add("agent_stand");
+
+        UserRepresentation user = new UserRepresentation();
+        user.setUsername(login);
+        return createKeycloakUser(credential, groupsList, user);
+
+    }
+
+    private ResponseEntity<String> createKeycloakUser(CredentialRepresentation credential, List<String> groupsList, UserRepresentation user) {
         user.setCredentials(Collections.singletonList(credential));
         user.setEnabled(true);
         user.setGroups(groupsList);
@@ -39,7 +72,6 @@ public class KeyCloakService {
         Response response = instance.create(user);
 
         return ResponseEntity.status(response.getStatus()).body(response.getStatusInfo().toString());
-
     }
 
     public List<UserRepresentation> getUser(String userName){
@@ -49,7 +81,7 @@ public class KeyCloakService {
 
     }
 
-    public void updateUser(String userId, AdminDto adminDto){
+    public void updateUserAdmin(String userId, AdminDto adminDto){
         CredentialRepresentation credential = Credentials
                 .createPasswordCredentials(adminDto.getPassword());
         UserRepresentation user = new UserRepresentation();
@@ -60,7 +92,6 @@ public class KeyCloakService {
         UsersResource usersResource = getInstance();
         usersResource.get(userId).update(user);
     }
-
 
     public UsersResource getInstance(){
         return KeycloakConfig.getInstance().realm(KeycloakConfig.realm).users();
