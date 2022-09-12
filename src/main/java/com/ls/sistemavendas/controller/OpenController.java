@@ -53,6 +53,16 @@ public class OpenController {
 
     }
 
+    @PutMapping("/user/{login}")
+    @ApiOperation(value = "Put update to the user (test)")
+    public ResponseEntity<String> updUser(@PathVariable(value = "login") String login, @RequestBody AdminDto adminDto){
+
+         keyCloakService.updateUserAdmin(adminDto);
+
+         return ResponseEntity.ok().body("Done");
+
+    }
+
     @GetMapping("/user/{login}")
     @ApiOperation(value = "Get user (test)")
     public String getUser(@PathVariable(value = "login") String login){

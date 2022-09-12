@@ -81,16 +81,23 @@ public class KeyCloakService {
 
     }
 
-    public void updateUserAdmin(String userId, AdminDto adminDto){
+    public void updateUserAdmin(AdminDto adminDto){
         CredentialRepresentation credential = Credentials
                 .createPasswordCredentials(adminDto.getPassword());
-        UserRepresentation user = new UserRepresentation();
+
+        UsersResource usersResource = getInstance();
+        List<UserRepresentation> users = usersResource.search(adminDto.getLogin(), true);
+        if (users.isEmpty()){
+            throw new RuntimeException("teste");
+        }
+
+        UserRepresentation user = users.get(0);
+
         user.setUsername(adminDto.getLogin());
         user.setFirstName(adminDto.getName());
         user.setCredentials(Collections.singletonList(credential));
 
-        UsersResource usersResource = getInstance();
-        usersResource.get(userId).update(user);
+        usersResource.get(user.getId()).update(user);
     }
 
     public UsersResource getInstance(){
