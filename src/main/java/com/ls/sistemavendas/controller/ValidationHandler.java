@@ -75,4 +75,9 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
 
+    @ExceptionHandler(value = {    EventNotFoundRuntimeException.class})
+    protected ResponseEntity<Object> handleEventNotFoundRuntimeException(
+            EventNotFoundRuntimeException ex ) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
 }

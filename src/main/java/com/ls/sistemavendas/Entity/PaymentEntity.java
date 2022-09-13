@@ -30,7 +30,7 @@ public class PaymentEntity {
 
     private String comment;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     private Set<PaymentItemEntity> paymentItems;
 

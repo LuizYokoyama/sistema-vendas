@@ -9,7 +9,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.UUID;
 @RequestMapping("/api")
 @Api(value="Events Form API REST")
 @CrossOrigin(origins = "*")
-@PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+//@PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
 public class EventController {
 
 
@@ -42,6 +41,7 @@ public class EventController {
         if (!eventEntityOptional.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+
         formDetailsDto.getEvent().setId(id);
         return eventService.update(formDetailsDto);
     }

@@ -3,6 +3,7 @@ package com.ls.sistemavendas.service;
 import com.ls.sistemavendas.Entity.*;
 import com.ls.sistemavendas.dto.*;
 import com.ls.sistemavendas.exceptions.EventAtSameTimeRuntimeException;
+import com.ls.sistemavendas.exceptions.EventNotFoundRuntimeException;
 import com.ls.sistemavendas.exceptions.EventRepeatedRuntimeException;
 import com.ls.sistemavendas.exceptions.UserNameAlreadyExistsRuntimeException;
 import com.ls.sistemavendas.repository.EventAgentRepository;
@@ -86,6 +87,20 @@ public class EventService implements UserDetailsService, IEventService {
     @Override
     @Transactional
     public ResponseEntity<FormDetailsDto> update(FormDetailsDto formDetailsDto) {
+
+        Optional<EventEntity> eventEntityOptional = eventRepository.findById(formDetailsDto.getEvent().getId());
+
+        if (eventEntityOptional.isEmpty()){
+            throw new EventNotFoundRuntimeException("Verifique o id do evento! Porque este não foi encontrado.");
+        }
+
+        EventEntity event =  eventEntityOptional.get();
+        if (!Objects.equals(event.getLogin(), formDetailsDto.getAdmin().getLogin())){
+            keyCloakService.addUserAdmin(formDetailsDto.getAdmin());
+            keyCloakService.deleteUser(formDetailsDto.getAdmin().getLogin());
+        } else{
+            keyCloakService.updateUserAdmin(formDetailsDto.getAdmin());
+        }
 
         EventEntity eventEntity = formDetailsDtoToEventEntity(formDetailsDto);
         eventEntity = eventRepository.save(eventEntity);
@@ -296,7 +311,11 @@ public class EventService implements UserDetailsService, IEventService {
     @Override
     public ResponseEntity<FormDetailsDto> getEvent(UUID id) {
 
-        EventEntity eventEntity = eventRepository.findById(id).get();
+        Optional<EventEntity> eventEntityOptional = eventRepository.findById(id);
+        if (eventEntityOptional.isEmpty()){
+            throw new EventNotFoundRuntimeException("Verifique o id do evento! Porque este não foi encontrado!");
+        }
+        EventEntity eventEntity = eventEntityOptional.get();
         FormDetailsDto formDetailsDto = eventEntityToFormDetailsDto(eventEntity);
         return ResponseEntity.status(HttpStatus.OK).body(formDetailsDto);
     }
@@ -339,9 +358,8 @@ public class EventService implements UserDetailsService, IEventService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        EventEntity eventEntity = eventRepository.findByLogin(username)
+        return eventRepository.findByLogin(username)
                 .orElseThrow( () -> new UsernameNotFoundException("Verifique o login, porque "
                         + username + " não foi encontrado!"));
-        return eventEntity;
     }
 }

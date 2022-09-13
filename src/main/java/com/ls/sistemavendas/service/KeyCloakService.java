@@ -69,15 +69,15 @@ public class KeyCloakService {
         user.setGroups(groupsList);
 
         UsersResource instance = getInstance();
-        Response response = instance.create(user);
+        try (Response response = instance.create(user)) {
 
-        return ResponseEntity.status(response.getStatus()).body(response.getStatusInfo().toString());
+            return ResponseEntity.status(response.getStatus()).body(response.getStatusInfo().toString());
+        }
     }
 
     public List<UserRepresentation> getUser(String userName){
         UsersResource usersResource = getInstance();
-        List<UserRepresentation> user = usersResource.search(userName, true);
-        return user;
+        return usersResource.search(userName, true);
 
     }
 
@@ -88,16 +88,26 @@ public class KeyCloakService {
         UsersResource usersResource = getInstance();
         List<UserRepresentation> users = usersResource.search(adminDto.getLogin(), true);
         if (users.isEmpty()){
-            throw new RuntimeException("teste");
+            throw new RuntimeException("Não foi possível atualizar este Login");
         }
 
         UserRepresentation user = users.get(0);
-
         user.setUsername(adminDto.getLogin());
         user.setFirstName(adminDto.getName());
         user.setCredentials(Collections.singletonList(credential));
 
         usersResource.get(user.getId()).update(user);
+    }
+
+    public void deleteUser(String userName){
+        UsersResource usersResource = getInstance();
+        List<UserRepresentation> users = usersResource.search(userName, true);
+        if (users.isEmpty()){
+            throw new RuntimeException("Não foi possível remover o usuário do sistema.");
+        }
+        UserRepresentation user = users.get(0);
+        usersResource.get(user.getId())
+                .remove();
     }
 
     public UsersResource getInstance(){

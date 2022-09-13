@@ -30,7 +30,7 @@ public class ParticipantEntity {
             insertable=false, updatable=false, nullable = false)
     private Timestamp entryDateTime;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "participant_id")
     private List<TransactionItemEntity> items;
 }
