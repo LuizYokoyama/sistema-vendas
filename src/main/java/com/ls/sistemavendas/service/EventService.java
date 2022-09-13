@@ -14,9 +14,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +25,7 @@ import java.util.*;
 
 @Service
 @Validated
-public class EventService implements UserDetailsService, IEventService {
+public class EventService implements IEventService {
 
     final int SHORT_ID_LENGTH = 8;
 
@@ -38,6 +35,7 @@ public class EventService implements UserDetailsService, IEventService {
     @Autowired
     private StandAgentRepository standAgentRepository;
 
+    @Autowired
     private EventRepository eventRepository;
 
     @Autowired
@@ -46,11 +44,6 @@ public class EventService implements UserDetailsService, IEventService {
     @Autowired
     private KeyCloakService keyCloakService;
 
-    @Autowired
-    @Override
-    public void setEventRepository(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
-    }
 
     @Override
     @Transactional
@@ -74,8 +67,10 @@ public class EventService implements UserDetailsService, IEventService {
                 throw new UserNameAlreadyExistsRuntimeException("Use outro login! Porque este já foi usado!");
             }
             throw new RuntimeException(keycloak.toString());
-
         }
+        formRegisterDto.getAdmin().setAdminId(
+                keyCloakService.getUser(formRegisterDto.getAdmin().getLogin()).get(0).getId()
+        );
 
         EventEntity eventEntity = formRegisterDtoToEventEntity(formRegisterDto);
         eventEntity = eventRepository.save(eventEntity);
@@ -94,17 +89,14 @@ public class EventService implements UserDetailsService, IEventService {
             throw new EventNotFoundRuntimeException("Verifique o id do evento! Porque este não foi encontrado.");
         }
 
-        EventEntity event =  eventEntityOptional.get();
-        if (!Objects.equals(event.getLogin(), formDetailsDto.getAdmin().getLogin())){
-            keyCloakService.addUserAdmin(formDetailsDto.getAdmin());
-            keyCloakService.deleteUser(formDetailsDto.getAdmin().getLogin());
-        } else{
-            keyCloakService.updateUserAdmin(formDetailsDto.getAdmin());
-        }
-
+        String password = formDetailsDto.getAdmin().getPassword();
         EventEntity eventEntity = formDetailsDtoToEventEntity(formDetailsDto);
         eventEntity = eventRepository.save(eventEntity);
         formDetailsDto = eventEntityToFormDetailsDto(eventEntity);
+        formDetailsDto.getAdmin().setPassword(password);
+
+        keyCloakService.updateUserAdmin(formDetailsDto.getAdmin());
+        formDetailsDto.getAdmin().setPassword("");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(formDetailsDto);
     }
@@ -144,8 +136,8 @@ public class EventService implements UserDetailsService, IEventService {
         formRegisterDto.setEvent(new EventDto(eventEntity.getId(), eventEntity.getName(), eventEntity.getPhoto(),
                 eventEntity.getDescription(), eventEntity.getTotalAgents(), eventEntity.getFirstOccurrenceDateTime(),
                 eventEntity.getDuration()));
-        formRegisterDto.setAdmin(new AdminDto(eventEntity.getAdminName(), eventEntity.getLogin(), eventEntity.getPassword(),
-                eventEntity.getAvatar()));
+        formRegisterDto.setAdmin(new AdminDto(eventEntity.getAdminName(), eventEntity.getAdminId(),
+                eventEntity.getLogin(), "", eventEntity.getAvatar()));
 
         return formRegisterDto;
 
@@ -184,8 +176,8 @@ public class EventService implements UserDetailsService, IEventService {
         formDetailsDto.setEvent(new EventDetailDto(eventEntity.getId(), eventEntity.getName(), eventEntity.getPhoto(),
                 eventEntity.getDescription(), eventEntity.getTotalAgents(), eventEntity.getFirstOccurrenceDateTime(),
                 eventEntity.getDuration()));
-        formDetailsDto.setAdmin(new AdminDto(eventEntity.getAdminName(), eventEntity.getLogin(),
-                eventEntity.getPassword(), eventEntity.getAvatar()));
+        formDetailsDto.setAdmin(new AdminDto(eventEntity.getAdminName(), eventEntity.getAdminId(), eventEntity.getLogin(),
+                "", eventEntity.getAvatar()));
         Set<EventAgentDto> agentDtos = new HashSet<>();
         if (eventEntity.getAgentsList() != null){
             for (EventAgentEntity agentEntity : eventEntity.getAgentsList()) {
@@ -230,9 +222,9 @@ public class EventService implements UserDetailsService, IEventService {
         eventEntity.setPhoto(formRegisterDto.getEvent().getPhoto());
         eventEntity.setTotalAgents(formRegisterDto.getEvent().getTotalAgents());
         eventEntity.setAdminName(formRegisterDto.getAdmin().getName());
+        eventEntity.setAdminId(formRegisterDto.getAdmin().getAdminId());
         eventEntity.setAvatar(formRegisterDto.getAdmin().getAvatar());
         eventEntity.setLogin(formRegisterDto.getAdmin().getLogin());
-        eventEntity.setPassword(passwordEncoder.encode(formRegisterDto.getAdmin().getPassword()));
         eventEntity.setPhoto(formRegisterDto.getEvent().getPhoto());
         eventEntity.setDuration(formRegisterDto.getEvent().getDuration());
         eventEntity.setDescription(formRegisterDto.getEvent().getDescription());
@@ -285,9 +277,9 @@ public class EventService implements UserDetailsService, IEventService {
         eventEntity.setPhoto(formDetailsDto.getEvent().getPhoto());
         eventEntity.setTotalAgents(formDetailsDto.getEvent().getTotalAgents());
         eventEntity.setAdminName(formDetailsDto.getAdmin().getName());
+        eventEntity.setAdminId(formDetailsDto.getAdmin().getAdminId());
         eventEntity.setAvatar(formDetailsDto.getAdmin().getAvatar());
         eventEntity.setLogin(formDetailsDto.getAdmin().getLogin());
-        eventEntity.setPassword(passwordEncoder.encode(formDetailsDto.getAdmin().getPassword()));
         eventEntity.setPhoto(formDetailsDto.getEvent().getPhoto());
         eventEntity.setDuration(formDetailsDto.getEvent().getDuration());
         eventEntity.setDescription(formDetailsDto.getEvent().getDescription());
@@ -356,10 +348,4 @@ public class EventService implements UserDetailsService, IEventService {
         return ResponseEntity.status(HttpStatus.CREATED).body(eventAgentDto.getId());
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return eventRepository.findByLogin(username)
-                .orElseThrow( () -> new UsernameNotFoundException("Verifique o login, porque "
-                        + username + " não foi encontrado!"));
-    }
 }

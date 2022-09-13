@@ -85,18 +85,13 @@ public class KeyCloakService {
         CredentialRepresentation credential = Credentials
                 .createPasswordCredentials(adminDto.getPassword());
 
-        UsersResource usersResource = getInstance();
-        List<UserRepresentation> users = usersResource.search(adminDto.getLogin(), true);
-        if (users.isEmpty()){
-            throw new RuntimeException("Não foi possível atualizar este Login");
-        }
-
-        UserRepresentation user = users.get(0);
+        UserRepresentation user = new UserRepresentation();
         user.setUsername(adminDto.getLogin());
         user.setFirstName(adminDto.getName());
         user.setCredentials(Collections.singletonList(credential));
 
-        usersResource.get(user.getId()).update(user);
+        UsersResource usersResource = getInstance();
+        usersResource.get(adminDto.getAdminId()).update(user);
     }
 
     public void deleteUser(String userName){

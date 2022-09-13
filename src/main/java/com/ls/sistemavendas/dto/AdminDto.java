@@ -1,5 +1,6 @@
 package com.ls.sistemavendas.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -22,6 +23,9 @@ public class AdminDto {
     @NotBlank(message = "Forneça o nome do administrador do evento!")
     @Size(max = AVATAR_MAX_SIZE)
     private String name;
+
+    @JsonIgnore
+    private String adminId;
 
     @EqualsAndHashCode.Include
     @NotBlank(message = "Forneça um login!")
