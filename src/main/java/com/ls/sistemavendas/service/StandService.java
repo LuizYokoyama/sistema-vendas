@@ -1,7 +1,6 @@
 package com.ls.sistemavendas.service;
 
 import com.ls.sistemavendas.Entity.ProductEntity;
-import com.ls.sistemavendas.Entity.StandAgentEntity;
 import com.ls.sistemavendas.Entity.StandEntity;
 import com.ls.sistemavendas.Entity.TransactionItemEntity;
 import com.ls.sistemavendas.dto.*;
@@ -15,9 +14,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +27,7 @@ import java.util.UUID;
 
 @Service
 @Validated
-public class StandService implements UserDetailsService, IStandService{
+public class StandService implements IStandService{
 
     @Autowired
     private StandRepository standRepository;
@@ -110,13 +106,4 @@ public class StandService implements UserDetailsService, IStandService{
         return ResponseEntity.status(HttpStatus.CREATED).body(transactionResponseDto);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        StandAgentEntity standAgentEntity = standAgentRepository.findById(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Verifique o código do agente, porque "
-                        + username + " não foi encontrado!"));
-
-        return standAgentEntity;
-    }
 }

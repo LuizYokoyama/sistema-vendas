@@ -26,7 +26,7 @@ public class OpenController {
     IHomeScreenService homeScreenService;
 
     @Autowired
-    IEventService formService;
+    IEventService eventService;
 
     @Autowired
     KeyCloakService keyCloakService;
@@ -38,11 +38,18 @@ public class OpenController {
         return homeScreenService.findAllEventsStart();
     }
 
+    @GetMapping("/agent-login")
+    @ApiOperation(value = "Login agent")
+    public ResponseEntity<String> agentLogin(){
+
+        return eventService.agentLogin("eventadmin", "test");
+    }
+
     @PostMapping("/event")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Add a new event")
     public ResponseEntity<FormDetailsDto> addEvent(@RequestBody FormRegisterDto formRegisterDto){
-        return formService.register(formRegisterDto);
+        return eventService.register(formRegisterDto);
     }
 
     @PostMapping("/user")

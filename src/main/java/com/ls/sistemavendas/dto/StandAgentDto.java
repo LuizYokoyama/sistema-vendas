@@ -1,5 +1,6 @@
 package com.ls.sistemavendas.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.validation.constraints.Size;
@@ -17,6 +18,9 @@ public class StandAgentDto {
     private String id;
 
     @Size(max = NAME_MAX_SIZE)
+    @JsonIgnore
     private String agentName;
+
+    private String keycloakId;
 
 }

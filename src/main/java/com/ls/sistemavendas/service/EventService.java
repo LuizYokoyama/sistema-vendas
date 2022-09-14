@@ -10,14 +10,15 @@ import com.ls.sistemavendas.repository.EventAgentRepository;
 import com.ls.sistemavendas.repository.EventRepository;
 import com.ls.sistemavendas.repository.StandAgentRepository;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -165,7 +166,8 @@ public class EventService implements IEventService {
             Set<StandAgentDto> standAgentDtos = new HashSet<>();
             if (standEntity.getAgentsList() != null) {
                 for (StandAgentEntity standAgentEntity : standEntity.getAgentsList()) {
-                    StandAgentDto standAgentDto = new StandAgentDto(standAgentEntity.getId(), standAgentEntity.getName());
+                    StandAgentDto standAgentDto = new StandAgentDto(standAgentEntity.getId(), standAgentEntity.getName(),
+                            standAgentEntity.getKeycloakId());
                     standAgentDtos.add(standAgentDto);
                 }
                 standDto.setAgentsList(standAgentDtos);
@@ -181,7 +183,8 @@ public class EventService implements IEventService {
         Set<EventAgentDto> agentDtos = new HashSet<>();
         if (eventEntity.getAgentsList() != null){
             for (EventAgentEntity agentEntity : eventEntity.getAgentsList()) {
-                EventAgentDto agentDto = new EventAgentDto(agentEntity.getId(), agentEntity.getName());
+                EventAgentDto agentDto = new EventAgentDto(agentEntity.getId(), agentEntity.getName(),
+                        agentEntity.getKeycloakId());
                 agentDtos.add(agentDto);
             }
             formDetailsDto.setAgentsList(agentDtos);
@@ -266,6 +269,7 @@ public class EventService implements IEventService {
                     standAgentEntity.setId(standAgentDto.getId());
                     standAgentEntity.setName(standAgentDto.getAgentName());
                     standAgentEntity.setStand(standEntity);
+                    standAgentEntity.setKeycloakId(standAgentDto.getKeycloakId());
                     standAgentEntities.add(standAgentEntity);
                 }
                 standEntity.setAgentsList(standAgentEntities);
@@ -290,7 +294,7 @@ public class EventService implements IEventService {
             Set<EventAgentEntity> cashierAgentEntities = new HashSet<>();
             for (EventAgentDto agentDto : formDetailsDto.getAgentsList()) {
                 EventAgentEntity agentEntity = new EventAgentEntity(agentDto.getId(), agentDto.getAgentName(),
-                        eventEntity);
+                        eventEntity, agentDto.getKeycloakId());
                 cashierAgentEntities.add(agentEntity);
             }
             eventEntity.setAgentsList(cashierAgentEntities);
@@ -313,39 +317,84 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public ResponseEntity<String> newStandAgent() {
+    public ResponseEntity<StandAgentDto> newStandAgent() {
 
         StandAgentEntity standAgentEntity = new StandAgentEntity();
         standAgentEntity.setId(RandomStringUtils.randomAlphanumeric(SHORT_ID_LENGTH));
-        standAgentEntity = standAgentRepository.save(standAgentEntity);
+
 
         ResponseEntity<String> userKC = keyCloakService.addUserStandAgent(standAgentEntity.getId());
 
-        if (userKC.getStatusCode() != HttpStatus.CREATED ){
+        if (userKC.getStatusCode() != HttpStatus.CREATED){
+            if (userKC.getStatusCode() == HttpStatus.CONFLICT){
+                standAgentEntity.setId(RandomStringUtils.randomAlphanumeric(SHORT_ID_LENGTH));
+                userKC = keyCloakService.addUserStandAgent(standAgentEntity.getId());
+            }
             throw new RuntimeException(userKC.toString());
         }
 
+        standAgentEntity.setKeycloakId(
+                keyCloakService.getUser(standAgentEntity.getId()).get(0).getId()
+        );
+
+        standAgentEntity = standAgentRepository.save(standAgentEntity);
+
         StandAgentDto standAgentDto = new StandAgentDto();
-        BeanUtils.copyProperties(standAgentEntity, standAgentDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(standAgentDto.getId());
+        standAgentDto.setKeycloakId(standAgentEntity.getKeycloakId());
+        standAgentDto.setId(standAgentEntity.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(standAgentDto);
     }
 
     @Override
-    public ResponseEntity<String> newEventAgent() {
+    public ResponseEntity<EventAgentDto> newEventAgent() {
 
         EventAgentEntity eventAgentEntity = new EventAgentEntity();
         eventAgentEntity.setId(RandomStringUtils.randomAlphanumeric(SHORT_ID_LENGTH));
-        eventAgentEntity = eventAgentRepository.save(eventAgentEntity);
 
-        ResponseEntity<String> userKC = keyCloakService.addUserStandAgent(eventAgentEntity.getId());
 
-        if (userKC.getStatusCode() != HttpStatus.CREATED ){
+        ResponseEntity<String> userKC = keyCloakService.addUserEventAgent(eventAgentEntity.getId());
+
+        if (userKC.getStatusCode() != HttpStatus.CREATED){
+            if (userKC.getStatusCode() == HttpStatus.CONFLICT){  //case id already exists, try a new one
+                eventAgentEntity.setId(RandomStringUtils.randomAlphanumeric(SHORT_ID_LENGTH));
+                userKC = keyCloakService.addUserEventAgent(eventAgentEntity.getId());
+            }
             throw new RuntimeException(userKC.toString());
         }
 
+        eventAgentEntity.setKeycloakId(
+                keyCloakService.getUser(eventAgentEntity.getId()).get(0).getId()
+        );
+
+        eventAgentEntity = eventAgentRepository.save(eventAgentEntity);
+
         EventAgentDto eventAgentDto = new EventAgentDto();
-        BeanUtils.copyProperties(eventAgentEntity, eventAgentDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(eventAgentDto.getId());
+        eventAgentDto.setKeycloakId(eventAgentEntity.getKeycloakId());
+        eventAgentDto.setId(eventAgentEntity.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(eventAgentDto);
+    }
+
+    @Override
+    public ResponseEntity<String> agentLogin(String username, String password) {
+
+        String url ="http://localhost:8180/auth/realms/quermesse/protocol/openid-connect/token";
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+        map.add("client_id", "quermese_admin");
+        map.add("username", username);
+        map.add("password", password);
+        map.add("grant_type", "password");
+        map.add("client_secret", "zbji9pCixGxl1NByrdJJG3zYqJPL4mmN");
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class );
+
+        return response;
     }
 
 }
