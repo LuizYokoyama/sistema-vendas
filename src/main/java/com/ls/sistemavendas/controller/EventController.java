@@ -1,6 +1,5 @@
 package com.ls.sistemavendas.controller;
 
-import com.ls.sistemavendas.Entity.EventEntity;
 import com.ls.sistemavendas.dto.FormDetailsDto;
 import com.ls.sistemavendas.dto.FormRegisterDto;
 import com.ls.sistemavendas.service.IEventService;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -37,11 +35,6 @@ public class EventController {
     @ApiOperation(value = "Update details of the event form")
     public ResponseEntity<FormDetailsDto> updateEvent(@PathVariable(value = "id") UUID id, @RequestBody FormDetailsDto formDetailsDto){
 
-        Optional<EventEntity> eventEntityOptional = eventService.findById(id);
-        if (!eventEntityOptional.isPresent()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
         formDetailsDto.getEvent().setId(id);
         return eventService.update(formDetailsDto);
     }
@@ -50,7 +43,7 @@ public class EventController {
     @ApiOperation(value = "Get details of the event form")
     public ResponseEntity<FormDetailsDto> getEvent(@PathVariable(value = "id") UUID id){
 
-        if (!eventService.findById(id).isPresent()){
+        if (eventService.findById(id).isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         return eventService.getEvent(id);

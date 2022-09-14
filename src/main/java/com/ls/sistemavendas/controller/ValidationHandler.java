@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.ClientErrorException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,5 +80,11 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleEventNotFoundRuntimeException(
             EventNotFoundRuntimeException ex ) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(value = {    ClientErrorException.class})
+    protected ResponseEntity<Object> handleClientErrorException(
+            ClientErrorException  ex ) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Use um login diferente! Porque este já foi usado.");
     }
 }

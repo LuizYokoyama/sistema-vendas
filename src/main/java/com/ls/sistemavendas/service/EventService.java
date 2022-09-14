@@ -89,14 +89,14 @@ public class EventService implements IEventService {
             throw new EventNotFoundRuntimeException("Verifique o id do evento! Porque este não foi encontrado.");
         }
 
-        String password = formDetailsDto.getAdmin().getPassword();
-        EventEntity eventEntity = formDetailsDtoToEventEntity(formDetailsDto);
-        eventEntity = eventRepository.save(eventEntity);
-        formDetailsDto = eventEntityToFormDetailsDto(eventEntity);
-        formDetailsDto.getAdmin().setPassword(password);
+        EventEntity eventEntity = eventEntityOptional.get();
+        formDetailsDto.getAdmin().setAdminId(eventEntity.getAdminId());
 
         keyCloakService.updateUserAdmin(formDetailsDto.getAdmin());
-        formDetailsDto.getAdmin().setPassword("");
+
+        eventEntity = formDetailsDtoToEventEntity(formDetailsDto);
+        eventEntity = eventRepository.save(eventEntity);
+        formDetailsDto = eventEntityToFormDetailsDto(eventEntity);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(formDetailsDto);
     }
