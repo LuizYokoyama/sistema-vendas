@@ -39,9 +39,9 @@ public class StandController {
         return standService.newTransaction(transactionDto);
     }
 
-    @PutMapping("/stand-agent/{participant-code}")
+    @PutMapping("/stand-agent/{agent-code}")
     @ApiOperation(value = "Put the name of the stand's agent.")
-    public ResponseEntity<StandAgentDto> putStandAgentName(@PathVariable(value = "participant-code") String code, @RequestBody String name){
+    public ResponseEntity<StandAgentDto> putStandAgentName(@PathVariable(value = "agent-code") String code, @RequestBody String name){
 
         return standService.setStandAgentName(code, name);
     }

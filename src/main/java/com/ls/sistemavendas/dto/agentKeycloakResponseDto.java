@@ -21,6 +21,7 @@ public class agentKeycloakResponseDto {
     String session_state;
     String scope;
     UUID standId;
+    UUID eventId;
     Boolean nameNeed;
 
 }

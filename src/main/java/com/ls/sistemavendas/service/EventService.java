@@ -424,7 +424,7 @@ public class EventService implements IEventService {
             var eventAgentEntityOptional = eventAgentRepository.findById(username);
             if (eventAgentEntityOptional.isPresent()){
                 if (eventAgentEntityOptional.get().getEvent() != null){
-                    agentKeycloakResponseDto.setStandId(eventAgentEntityOptional.get().getEvent().getId());
+                    agentKeycloakResponseDto.setEventId(eventAgentEntityOptional.get().getEvent().getId());
                 }
                 if (eventAgentEntityOptional.get().getName() == null){
                     agentKeycloakResponseDto.setNameNeed(true);

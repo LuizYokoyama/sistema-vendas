@@ -54,9 +54,9 @@ public class ParticipantController {
         return participantService.getParticipantCashier(code);
     }
 
-    @PutMapping("/event-agent/{participant-code}")
+    @PutMapping("/event-agent/{agent-code}")
     @ApiOperation(value = "Put the name of the event's agent.")
-    public ResponseEntity<EventAgentDto> putEventAgentName(@PathVariable(value = "participant-code") String code, @RequestBody String name){
+    public ResponseEntity<EventAgentDto> putEventAgentName(@PathVariable(value = "agent-code") String code, @RequestBody String name){
 
         return eventService.setEventAgentName(code, name);
     }
