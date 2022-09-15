@@ -1,9 +1,6 @@
 package com.ls.sistemavendas.controller;
 
-import com.ls.sistemavendas.dto.AdminDto;
-import com.ls.sistemavendas.dto.FormDetailsDto;
-import com.ls.sistemavendas.dto.FormRegisterDto;
-import com.ls.sistemavendas.dto.HomeScreenEventDto;
+import com.ls.sistemavendas.dto.*;
 import com.ls.sistemavendas.service.IEventService;
 import com.ls.sistemavendas.service.IHomeScreenService;
 import com.ls.sistemavendas.service.KeyCloakService;
@@ -38,11 +35,11 @@ public class OpenController {
         return homeScreenService.findAllEventsStart();
     }
 
-    @GetMapping("/agent-login")
+    @GetMapping("/agent-login/{code}")
     @ApiOperation(value = "Login agent")
-    public ResponseEntity<String> agentLogin(){
+    public ResponseEntity<agentKeycloakResponseDto> agentLogin(@PathVariable(value = "code") String code){
 
-        return eventService.agentLogin("eventadmin", "test");
+        return eventService.agentLogin(code);
     }
 
     @PostMapping("/event")

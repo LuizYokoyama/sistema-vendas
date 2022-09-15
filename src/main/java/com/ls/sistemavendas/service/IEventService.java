@@ -1,10 +1,7 @@
 package com.ls.sistemavendas.service;
 
 import com.ls.sistemavendas.Entity.EventEntity;
-import com.ls.sistemavendas.dto.EventAgentDto;
-import com.ls.sistemavendas.dto.FormDetailsDto;
-import com.ls.sistemavendas.dto.FormRegisterDto;
-import com.ls.sistemavendas.dto.StandAgentDto;
+import com.ls.sistemavendas.dto.*;
 import org.springframework.http.ResponseEntity;
 
 import javax.validation.Valid;
@@ -38,5 +35,7 @@ public interface IEventService {
 
     ResponseEntity<EventAgentDto> newEventAgent();
 
-    ResponseEntity<String> agentLogin(String username, String password);
+    ResponseEntity<agentKeycloakResponseDto> agentLogin(String username);
+
+    ResponseEntity<EventAgentDto> setEventAgentName(String code, String name);
 }

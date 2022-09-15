@@ -55,13 +55,13 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {StandNotFoundRuntimeException.class})
     protected ResponseEntity<Object> handleStandNotFoundException(
             StandNotFoundRuntimeException ex ) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     @ExceptionHandler(value = {ParticipantCodeNotFoundRuntimeException.class})
     protected ResponseEntity<Object> handleParticipantCodeNotFoundException(
             ParticipantCodeNotFoundRuntimeException ex ) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     @ExceptionHandler(value = {    UserNameAlreadyExistsRuntimeException.class})
@@ -79,12 +79,18 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {    EventNotFoundRuntimeException.class})
     protected ResponseEntity<Object> handleEventNotFoundRuntimeException(
             EventNotFoundRuntimeException ex ) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     @ExceptionHandler(value = {    ClientErrorException.class})
     protected ResponseEntity<Object> handleClientErrorException(
             ClientErrorException  ex ) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Use um login diferente! Porque este já foi usado.");
+    }
+
+    @ExceptionHandler(value = {    AgentCodeNotFoundRuntimeException.class})
+    protected ResponseEntity<Object> handleAgentCodeNotFoundException(
+            AgentCodeNotFoundRuntimeException  ex ) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

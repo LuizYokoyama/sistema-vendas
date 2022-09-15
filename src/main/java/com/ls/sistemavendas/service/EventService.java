@@ -1,15 +1,15 @@
 package com.ls.sistemavendas.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ls.sistemavendas.Entity.*;
 import com.ls.sistemavendas.dto.*;
-import com.ls.sistemavendas.exceptions.EventAtSameTimeRuntimeException;
-import com.ls.sistemavendas.exceptions.EventNotFoundRuntimeException;
-import com.ls.sistemavendas.exceptions.EventRepeatedRuntimeException;
-import com.ls.sistemavendas.exceptions.UserNameAlreadyExistsRuntimeException;
+import com.ls.sistemavendas.exceptions.*;
 import com.ls.sistemavendas.repository.EventAgentRepository;
 import com.ls.sistemavendas.repository.EventRepository;
 import com.ls.sistemavendas.repository.StandAgentRepository;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +29,10 @@ import java.util.*;
 public class EventService implements IEventService {
 
     final int SHORT_ID_LENGTH = 8;
+
+    final static String GRANT_TYPE = "password";
+    final static String CLIENT_ID = "quermese_admin";
+    final static String CLIENT_SECRET = "zbji9pCixGxl1NByrdJJG3zYqJPL4mmN";
 
     @Autowired
     private EventAgentRepository eventAgentRepository;
@@ -375,7 +379,7 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public ResponseEntity<String> agentLogin(String username, String password) {
+    public ResponseEntity<agentKeycloakResponseDto> agentLogin(String username) {
 
         String url ="http://localhost:8180/auth/realms/quermesse/protocol/openid-connect/token";
 
@@ -383,18 +387,67 @@ public class EventService implements IEventService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
-        map.add("client_id", "quermese_admin");
+        MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
+        map.add("client_id", CLIENT_ID);
         map.add("username", username);
-        map.add("password", password);
-        map.add("grant_type", "password");
-        map.add("client_secret", "zbji9pCixGxl1NByrdJJG3zYqJPL4mmN");
+        map.add("password", username);
+        map.add("grant_type", GRANT_TYPE);
+        map.add("client_secret", CLIENT_SECRET);
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class );
+        agentKeycloakResponseDto agentKeycloakResponseDto;
+        try {
+            if (response.getBody() == null){
+                throw new BadCredentialsRuntimeException("Verifique o código do agente.");
+            }
+            agentKeycloakResponseDto = new ObjectMapper().readValue(
+                    response.getBody().replace("not-before-policy", "not_before_policy"),
+                    agentKeycloakResponseDto.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
-        return response;
+        agentKeycloakResponseDto.setNameNeed(false);
+        if (agentKeycloakResponseDto.getScope().equals("AGENT_STAND")){
+            var standAgentEntityOptional = standAgentRepository.findById(username);
+            if (standAgentEntityOptional.isPresent()){
+                if (standAgentEntityOptional.get().getStand() != null){
+                    agentKeycloakResponseDto.setStandId(standAgentEntityOptional.get().getStand().getId());
+                }
+                if (standAgentEntityOptional.get().getName() == null){
+                    agentKeycloakResponseDto.setNameNeed(true);
+                }
+            }
+        } else if (agentKeycloakResponseDto.getScope().equals("AGENT_EVENT")){
+            var eventAgentEntityOptional = eventAgentRepository.findById(username);
+            if (eventAgentEntityOptional.isPresent()){
+                if (eventAgentEntityOptional.get().getEvent() != null){
+                    agentKeycloakResponseDto.setStandId(eventAgentEntityOptional.get().getEvent().getId());
+                }
+                if (eventAgentEntityOptional.get().getName() == null){
+                    agentKeycloakResponseDto.setNameNeed(true);
+                }
+            }
+        }
+
+        return ResponseEntity.ok().body(agentKeycloakResponseDto);
+    }
+
+    public ResponseEntity<EventAgentDto> setEventAgentName(String code, String name) {
+
+        Optional<EventAgentEntity> eventAgentEntityOptional = eventAgentRepository.findById(code);
+        if (eventAgentEntityOptional.isEmpty()){
+            throw new AgentCodeNotFoundRuntimeException("Verifique o código do agente do evento! Porque "
+                    +code+ " não foi encontrado.");
+        }
+        EventAgentEntity eventAgentEntity = eventAgentEntityOptional.get();
+        eventAgentEntity.setName(name);
+        eventAgentEntity = eventAgentRepository.save(eventAgentEntity);
+        EventAgentDto eventAgentDto = new EventAgentDto();
+        BeanUtils.copyProperties(eventAgentEntity, eventAgentDto);
+        return ResponseEntity.status(HttpStatus.OK).body(eventAgentDto);
     }
 
 }
