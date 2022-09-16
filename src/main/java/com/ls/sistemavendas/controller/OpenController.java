@@ -37,9 +37,16 @@ public class OpenController {
 
     @GetMapping("/agent-login/{code}")
     @ApiOperation(value = "Login agent")
-    public ResponseEntity<agentKeycloakResponseDto> agentLogin(@PathVariable(value = "code") String code){
+    public ResponseEntity<AgentKeycloakResponseDto> agentLogin(@PathVariable(value = "code") String code){
 
-        return eventService.agentLogin(code);
+        return keyCloakService.agentLogin(code);
+    }
+
+    @GetMapping("/admin-login/{login}")
+    @ApiOperation(value = "Login admin")
+    public ResponseEntity<AdminKeycloakResponseDto> agentLogin(@PathVariable(value = "login") String login,
+                                                               @RequestBody String password){
+        return keyCloakService.adminLogin(login, password);
     }
 
     @PostMapping("/event")

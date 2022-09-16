@@ -35,7 +35,5 @@ public interface IEventService {
 
     ResponseEntity<EventAgentDto> newEventAgent();
 
-    ResponseEntity<agentKeycloakResponseDto> agentLogin(String username);
-
     ResponseEntity<EventAgentDto> setEventAgentName(String code, String name);
 }

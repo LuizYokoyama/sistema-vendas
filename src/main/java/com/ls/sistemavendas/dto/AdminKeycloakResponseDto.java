@@ -9,7 +9,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class agentKeycloakResponseDto {
+public class AdminKeycloakResponseDto {
 
     @EqualsAndHashCode.Include
     String access_token;
@@ -20,8 +20,6 @@ public class agentKeycloakResponseDto {
     int not_before_policy;
     String session_state;
     String scope;
-    UUID standId;
     UUID eventId;
-    Boolean nameNeed;
 
 }
