@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 public class FormTest {
     @Test
     void teste() throws IOException {
-        final var json = Paths.get("src", "test", "resources", "input.json");
+        final var json = Paths.get("src", "test", "resources", "formRegister.json");
         final var formDto = new ObjectMapper().registerModule(new JavaTimeModule()).readValue(json.toFile(), FormRegisterDto.class);
         Assertions.assertNotNull(formDto);
 

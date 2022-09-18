@@ -1,0 +1,45 @@
+{
+  "admin": {
+    "avatar": "string",
+    "login": "string",
+    "name": "string",
+    "password": "string"
+  },
+  "agentsList": [
+    {
+      "id": "string",
+      "keycloakId": "string"
+    }
+  ],
+  "event": {
+    "description": "string",
+    "duration": 10,
+    "eventName": "string",
+    "firstOccurrenceDateTime": "2029-09-18T23:27:29.800Z",
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "photo": "string",
+    "totalAgents": 10
+  },
+  "standsList": [
+    {
+      "agentsList": [
+        {
+          "id": "string",
+          "keycloakId": "string"
+        }
+      ],
+      "description": "string",
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "index": 10,
+      "productsList": [
+        {
+          "description": "string",
+          "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "price": 3
+        }
+      ],
+      "standTotalAgents": 10,
+      "totalTransactions": 0
+    }
+  ]
+}

@@ -11,7 +11,6 @@ import com.ls.sistemavendas.exceptions.BadCredentialsRuntimeException;
 import com.ls.sistemavendas.repository.EventAgentRepository;
 import com.ls.sistemavendas.repository.EventRepository;
 import com.ls.sistemavendas.repository.StandAgentRepository;
-import lombok.AllArgsConstructor;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -30,9 +29,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@AllArgsConstructor
+
 @Service
-public class KeyCloakService {
+public class KeycloakService {
 
     final static String URL ="http://localhost:8180/auth/realms/quermesse/protocol/openid-connect/token";
     final static String GRANT_TYPE = "password";

@@ -11,7 +11,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -36,10 +35,7 @@ public class EventService implements IEventService {
     private EventRepository eventRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private KeyCloakService keyCloakService;
+    private KeycloakService keycloakService;
 
 
     @Override
@@ -58,7 +54,7 @@ public class EventService implements IEventService {
                     "Porque este nome já foi usado.\n}");
         }
 
-        ResponseEntity<String> keycloak =  keyCloakService.addUserAdmin(formRegisterDto.getAdmin());
+        ResponseEntity<String> keycloak =  keycloakService.addUserAdmin(formRegisterDto.getAdmin());
         if (keycloak.getStatusCode() != HttpStatus.CREATED){
             if (keycloak.getStatusCode() == HttpStatus.CONFLICT){
                 throw new UserNameAlreadyExistsRuntimeException("Use outro login! Porque este já foi usado!");
@@ -66,7 +62,7 @@ public class EventService implements IEventService {
             throw new RuntimeException(keycloak.toString());
         }
         formRegisterDto.getAdmin().setAdminId(
-                keyCloakService.getUser(formRegisterDto.getAdmin().getLogin()).get(0).getId()
+                keycloakService.getUser(formRegisterDto.getAdmin().getLogin()).get(0).getId()
         );
 
         EventEntity eventEntity = formRegisterDtoToEventEntity(formRegisterDto);
@@ -89,7 +85,7 @@ public class EventService implements IEventService {
         EventEntity eventEntity = eventEntityOptional.get();
         formDetailsDto.getAdmin().setAdminId(eventEntity.getAdminId());
 
-        keyCloakService.updateUserAdmin(formDetailsDto.getAdmin());
+        keycloakService.updateUserAdmin(formDetailsDto.getAdmin());
 
         eventEntity = formDetailsDtoToEventEntity(formDetailsDto);
         eventEntity = eventRepository.save(eventEntity);
@@ -319,18 +315,18 @@ public class EventService implements IEventService {
         standAgentEntity.setId(RandomStringUtils.randomAlphanumeric(SHORT_ID_LENGTH));
 
 
-        ResponseEntity<String> userKC = keyCloakService.addUserStandAgent(standAgentEntity.getId());
+        ResponseEntity<String> userKC = keycloakService.addUserStandAgent(standAgentEntity.getId());
 
         if (userKC.getStatusCode() != HttpStatus.CREATED){
             if (userKC.getStatusCode() == HttpStatus.CONFLICT){
                 standAgentEntity.setId(RandomStringUtils.randomAlphanumeric(SHORT_ID_LENGTH));
-                userKC = keyCloakService.addUserStandAgent(standAgentEntity.getId());
+                userKC = keycloakService.addUserStandAgent(standAgentEntity.getId());
             }
             throw new RuntimeException(userKC.toString());
         }
 
         standAgentEntity.setKeycloakId(
-                keyCloakService.getUser(standAgentEntity.getId()).get(0).getId()
+                keycloakService.getUser(standAgentEntity.getId()).get(0).getId()
         );
 
         standAgentEntity = standAgentRepository.save(standAgentEntity);
@@ -348,18 +344,18 @@ public class EventService implements IEventService {
         eventAgentEntity.setId(RandomStringUtils.randomAlphanumeric(SHORT_ID_LENGTH));
 
 
-        ResponseEntity<String> userKC = keyCloakService.addUserEventAgent(eventAgentEntity.getId());
+        ResponseEntity<String> userKC = keycloakService.addUserEventAgent(eventAgentEntity.getId());
 
         if (userKC.getStatusCode() != HttpStatus.CREATED){
             if (userKC.getStatusCode() == HttpStatus.CONFLICT){  //case id already exists, try a new one
                 eventAgentEntity.setId(RandomStringUtils.randomAlphanumeric(SHORT_ID_LENGTH));
-                userKC = keyCloakService.addUserEventAgent(eventAgentEntity.getId());
+                userKC = keycloakService.addUserEventAgent(eventAgentEntity.getId());
             }
             throw new RuntimeException(userKC.toString());
         }
 
         eventAgentEntity.setKeycloakId(
-                keyCloakService.getUser(eventAgentEntity.getId()).get(0).getId()
+                keycloakService.getUser(eventAgentEntity.getId()).get(0).getId()
         );
 
         eventAgentEntity = eventAgentRepository.save(eventAgentEntity);

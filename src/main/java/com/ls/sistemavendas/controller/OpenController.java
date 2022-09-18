@@ -3,7 +3,7 @@ package com.ls.sistemavendas.controller;
 import com.ls.sistemavendas.dto.*;
 import com.ls.sistemavendas.service.IEventService;
 import com.ls.sistemavendas.service.IHomeScreenService;
-import com.ls.sistemavendas.service.KeyCloakService;
+import com.ls.sistemavendas.service.KeycloakService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class OpenController {
     IEventService eventService;
 
     @Autowired
-    KeyCloakService keyCloakService;
+    KeycloakService keyCloakService;
 
 
     @GetMapping("/start-events")
