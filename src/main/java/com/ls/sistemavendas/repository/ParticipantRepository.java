@@ -27,4 +27,5 @@ public interface ParticipantRepository extends JpaRepository<ParticipantEntity, 
             "WHERE p.code = :participantCode")
     public ParticipantSummaryDto getParticipantSummaryById(@Param("participantCode") String participantCode);
 
+    boolean existsByCode(String code);
 }

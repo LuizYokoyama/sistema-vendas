@@ -38,8 +38,8 @@ public class ParticipantService implements IParticipantService {
     @Transactional
     public ResponseEntity<ParticipantDetailDto> newParticipant(ParticipantDto participantDto) {
 
-        if (participantRepository.findById(participantDto.getParticipantCode()).isPresent()){
-            throw new ParticipantCodeAlreadyUsedRuntimeException("Use outro código, porque este já foi usado.");
+        if (participantRepository.existsByCode(participantDto.getParticipantCode())){
+            throw new ParticipantCodeAlreadyUsedRuntimeException("Use outro código de participante, porque este já foi usado.");
         }
         ParticipantEntity participantEntity = participantDtoToEntity(participantDto);
         participantEntity = participantRepository.save(participantEntity);

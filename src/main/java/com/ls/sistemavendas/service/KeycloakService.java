@@ -125,7 +125,7 @@ public class KeycloakService {
         UsersResource usersResource = getInstance();
         List<UserRepresentation> users = usersResource.search(userName, true);
         if (users.isEmpty()){
-            throw new RuntimeException("Não foi possível remover o usuário do sistema.");
+            throw new RuntimeException("Não foi possível remover o usuário do sistema! Porque não foi encontrado.");
         }
         UserRepresentation user = users.get(0);
         usersResource.get(user.getId())
