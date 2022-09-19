@@ -1,8 +1,10 @@
 package com.ls.sistemavendas.service;
 
 import com.ls.sistemavendas.Entity.ParticipantEntity;
+import com.ls.sistemavendas.Entity.PaymentEntity;
 import com.ls.sistemavendas.dto.ParticipantDetailDto;
 import com.ls.sistemavendas.dto.ParticipantDto;
+import com.ls.sistemavendas.dto.ParticipantReleasedDto;
 import com.ls.sistemavendas.repository.ParticipantRepository;
 import com.ls.sistemavendas.repository.PaymentRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -44,6 +46,8 @@ public class ParticipantServiceTest {
     private ParticipantDto participantDto;
     private ParticipantEntity participantEntity;
     private ParticipantDetailDto participantDetailDto;
+    private PaymentEntity paymentEntity;
+    private ParticipantReleasedDto participantReleasedDto;
 
     @BeforeEach
     public void setUp(){
@@ -51,6 +55,10 @@ public class ParticipantServiceTest {
         participantEntity = new ParticipantEntity("testCode", "testName", "pswd", new Timestamp(32131), new ArrayList<>());
         participantDto = new ParticipantDto("testCode", "testName", "pswd", new HashSet<>());
         participantDetailDto = participantService.participantEntityToParticipantDetailDto(participantEntity);
+        paymentEntity = new PaymentEntity();
+        paymentEntity.setPaymentItems(new HashSet<>());
+        participantReleasedDto = new ParticipantReleasedDto();
+
 
     }
 
@@ -60,6 +68,9 @@ public class ParticipantServiceTest {
         participantEntity = null;
         participantDto = null;
         participantDetailDto = null;
+        paymentEntity = null;
+        participantReleasedDto = null;
+
 
     }
 
@@ -74,6 +85,29 @@ public class ParticipantServiceTest {
         verify(participantRepository, times(1)).save(any());
         verify(participantRepository, times(1)).existsByCode(any());
         assertEquals(responseParticipantDetailsDto.getBody(), participantDetailDto);
+    }
+
+    @Test
+    void givenParticipantCodeReturnParticipantReleasedDto(){
+
+        when(paymentRepository.findByParticipantCode(any())).thenReturn(paymentEntity);
+        when(participantRepository.existsByCode(any())).thenReturn(true);
+
+        participantService.getParticipantReleased(any());
+
+        verify(participantRepository, times(1)).existsByCode(any());
+        verify(paymentRepository, times(1)).findByParticipantCode(any());
+    }
+
+    @Test
+    void givenParticipantCodeReturnAParticipantCashierDto(){
+
+        when(participantRepository.existsByCode(any())).thenReturn(true);
+
+        participantService.getParticipantCashier(any());
+
+        verify(participantRepository, times(1)).existsByCode(any());
+
     }
 
 }

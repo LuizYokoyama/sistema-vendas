@@ -56,7 +56,7 @@ public class ParticipantService implements IParticipantService {
     @Override
     public ResponseEntity<ParticipantReleasedDto> getParticipantReleased(String code) {
 
-        if (!participantRepository.findById(code).isPresent()){
+        if (!participantRepository.existsByCode(code)){
             throw new ParticipantCodeNotFoundRuntimeException("Confira o código do participante," +
                     " porque este não está cadastrado!");
         }
@@ -75,7 +75,7 @@ public class ParticipantService implements IParticipantService {
     @Override
     public ResponseEntity<CashierDto> getParticipantCashier(String code) {
 
-        if (!participantRepository.findById(code).isPresent()){
+        if (!participantRepository.existsByCode(code)){
             throw new ParticipantCodeNotFoundRuntimeException("Confira se o código do participante está correto," +
                     " porque este código informado não está cadastrado no sistema.");
         }
