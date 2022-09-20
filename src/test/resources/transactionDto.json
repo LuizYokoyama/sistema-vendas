@@ -1,0 +1,12 @@
+{
+  "items": [
+    {
+      "productID": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "quantity": 4
+    }
+  ],
+  "participantCode": "string",
+  "password": "string",
+  "standId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "totalTransaction": 11.10
+}

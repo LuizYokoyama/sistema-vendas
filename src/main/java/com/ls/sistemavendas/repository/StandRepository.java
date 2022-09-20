@@ -9,4 +9,6 @@ import java.util.UUID;
 @Repository("standRepository")
 public interface StandRepository extends JpaRepository<StandEntity, UUID> {
 
+    boolean existsById(UUID id);
+
 }

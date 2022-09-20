@@ -2,6 +2,7 @@ package com.ls.sistemavendas.service;
 
 import com.ls.sistemavendas.Entity.ParticipantEntity;
 import com.ls.sistemavendas.Entity.PaymentEntity;
+import com.ls.sistemavendas.dto.CashierDto;
 import com.ls.sistemavendas.dto.ParticipantDetailDto;
 import com.ls.sistemavendas.dto.ParticipantDto;
 import com.ls.sistemavendas.dto.ParticipantReleasedDto;
@@ -16,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.sql.Timestamp;
@@ -93,10 +96,11 @@ public class ParticipantServiceTest {
         when(paymentRepository.findByParticipantCode(any())).thenReturn(paymentEntity);
         when(participantRepository.existsByCode(any())).thenReturn(true);
 
-        participantService.getParticipantReleased(any());
+        ResponseEntity<ParticipantReleasedDto> responseEntity = participantService.getParticipantReleased(any());
 
         verify(participantRepository, times(1)).existsByCode(any());
         verify(paymentRepository, times(1)).findByParticipantCode(any());
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
     }
 
     @Test
@@ -104,9 +108,10 @@ public class ParticipantServiceTest {
 
         when(participantRepository.existsByCode(any())).thenReturn(true);
 
-        participantService.getParticipantCashier(any());
+        ResponseEntity<CashierDto> responseEntity = participantService.getParticipantCashier(any());
 
         verify(participantRepository, times(1)).existsByCode(any());
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
 
     }
 
