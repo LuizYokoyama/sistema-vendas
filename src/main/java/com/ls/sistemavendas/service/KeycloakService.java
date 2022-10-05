@@ -140,18 +140,23 @@ public class KeycloakService {
 
     public ResponseEntity<AgentKeycloakResponseDto> agentLogin(String username) {
 
-        ResponseEntity<String> response = auth(username, username);
+        ResponseEntity<String> response;
+        try {
+            response  = auth(username, username);
+        } catch (RuntimeException ex){
+            throw new BadCredentialsRuntimeException("Verifique o código do agente. Código não encontrado.");
+        }
 
         AgentKeycloakResponseDto agentKeycloakResponseDto;
         try {
             if (response.getBody() == null){
-                throw new BadCredentialsRuntimeException("Verifique o código do agente.");
+                throw new BadCredentialsRuntimeException("Verifique o código do agente. Código não encontrado.");
             }
             agentKeycloakResponseDto = new ObjectMapper().readValue(
                     response.getBody().replace("not-before-policy", "not_before_policy"),
                     AgentKeycloakResponseDto.class);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
 
         agentKeycloakResponseDto.setNameNeed(false);
@@ -182,7 +187,13 @@ public class KeycloakService {
 
     public ResponseEntity<AdminKeycloakResponseDto> adminLogin(String login, String password) {
 
-        ResponseEntity<String> response = auth(login, password);
+        ResponseEntity<String> response;
+        try {
+            response = auth(login, password);
+        } catch (RuntimeException ex){
+            throw new BadCredentialsRuntimeException("Verifique o login ou password!");
+        }
+
         AdminKeycloakResponseDto adminKeycloakResponseDto;
         try {
             if (response.getBody() == null){
@@ -192,7 +203,7 @@ public class KeycloakService {
                     response.getBody().replace("not-before-policy", "not_before_policy"),
                     AdminKeycloakResponseDto.class);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
 
         if (adminKeycloakResponseDto.getScope().equals("ADMIN")){

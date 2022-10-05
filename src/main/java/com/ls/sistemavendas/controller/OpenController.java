@@ -42,9 +42,9 @@ public class OpenController {
         return keyCloakService.agentLogin(code);
     }
 
-    @GetMapping("/admin-login/{login}")
+    @PostMapping("/admin-login/{login}")
     @ApiOperation(value = "Login admin")
-    public ResponseEntity<AdminKeycloakResponseDto> agentLogin(@PathVariable(value = "login") String login,
+    public ResponseEntity<AdminKeycloakResponseDto> adminLogin(@PathVariable(value = "login") String login,
                                                                @RequestBody String password){
         return keyCloakService.adminLogin(login, password);
     }
